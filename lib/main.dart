@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nexus/shared/styles/themes.dart';
 import 'modules/home_layout/home_page.dart';
 
 void main() {
@@ -12,7 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomePage(title: 'Flutter Demo Home Page'),
+      theme: lightTheme,
+      home: HomePage(),
     );
   }
 }
