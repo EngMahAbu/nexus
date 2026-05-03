@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/assets/fonts/nexus_icons.dart';
@@ -118,14 +119,23 @@ class RegisterScreen extends StatelessWidget {
                                 },
                               ),
                               SizedBox(height: 20),
-                              button(
-                                label: 'Create Account',
-                                suffixIcon:
-                                    NexusIcons.send_arrow_forward_outlined,
-                                onPressed: () {
-                                  if (formKey.currentState!.validate())
-                                    print('create account clicked');
-                                },
+                              ConditionalBuilder(
+                                condition: state is AuthRegisterLoadingState,
+                                builder: (context) =>
+                                    Center(child: CircularProgressIndicator()),
+                                fallback: (context) => button(
+                                  label: 'Create Account',
+                                  suffixIcon:
+                                      NexusIcons.send_arrow_forward_outlined,
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      cubit.createUser(
+                                        email: emailController.text,
+                                        password: passwordController.text,
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -147,7 +157,7 @@ class RegisterScreen extends StatelessWidget {
                                 buttonColor: Colors.transparent,
                                 isOutlined: true,
                                 onPressed: () {
-                                  print('google clicked');
+                                  showToast(message: 'coming soon');
                                 },
                               ),
                             ),
@@ -164,7 +174,7 @@ class RegisterScreen extends StatelessWidget {
                                 buttonColor: Colors.transparent,
                                 isOutlined: true,
                                 onPressed: () {
-                                  print('apple clicked');
+                                  showToast(message: 'coming soon');
                                 },
                               ),
                             ),
@@ -185,7 +195,7 @@ class RegisterScreen extends StatelessWidget {
                             SizedBox(width: 5),
                             textButton(
                               onPressed: () {
-                                print('sign in clicked');
+                                showToast(message: 'coming soon');
                               },
                               label: 'Sign In',
                             ),
