@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/assets/fonts/nexus_icons.dart';
 import 'package:nexus/modules/auth/cubit/auth_cubit.dart';
 import 'package:nexus/modules/auth/cubit/auth_states.dart';
+import 'package:nexus/modules/home_layout/home_page.dart';
 import 'package:nexus/shared/components/components.dart';
 import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/styles/colors.dart';
@@ -23,7 +24,18 @@ class RegisterScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is AuthRegisterSuccessState) {
+            // TODO: fix the null bug here
+            showToast(
+              message: 'Welcome ${state.credential.user!.displayName}!',
+              backgroundColor: Colors.green,
+            );
+            navigateToAndRemove(context, HomePage());
+          } else if (state is AuthRegisterErrorState) {
+            showToast(message: state.errorMessage);
+          }
+        },
         builder: (context, state) {
           AuthCubit cubit = AuthCubit.get(context);
 
@@ -130,6 +142,7 @@ class RegisterScreen extends StatelessWidget {
                                   onPressed: () {
                                     if (formKey.currentState!.validate()) {
                                       cubit.createUser(
+                                        name: nameController.text,
                                         email: emailController.text,
                                         password: passwordController.text,
                                       );
@@ -195,7 +208,7 @@ class RegisterScreen extends StatelessWidget {
                             SizedBox(width: 5),
                             textButton(
                               onPressed: () {
-                                showToast(message: 'coming soon');
+                                Navigator.pop(context);
                               },
                               label: 'Sign In',
                             ),

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/assets/fonts/nexus_icons.dart';
 import 'package:nexus/modules/auth/cubit/auth_cubit.dart';
 import 'package:nexus/modules/auth/cubit/auth_states.dart';
+import 'package:nexus/modules/auth/register_screen/register_screen.dart';
+import 'package:nexus/modules/home_layout/home_page.dart';
 import 'package:nexus/shared/components/components.dart';
 import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/styles/colors.dart';
@@ -20,7 +22,14 @@ class LoginScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is AuthLoginSuccessState) {
+            showToast(message: 'logged in', backgroundColor: Colors.green);
+            navigateToAndRemove(context, HomePage());
+          } else if (state is AuthLoginErrorState) {
+            showToast(message: state.errorMessage);
+          }
+        },
         builder: (context, state) {
           AuthCubit cubit = AuthCubit.get(context);
 
@@ -145,8 +154,7 @@ class LoginScreen extends StatelessWidget {
                                   ),
                                   SizedBox(height: 20),
                                   ConditionalBuilder(
-                                    // condition: state is AuthRegisterLoadingState,
-                                    condition: false,
+                                    condition: state is AuthLoginLoadingState,
                                     builder: (context) => Center(
                                       child: CircularProgressIndicator(),
                                     ),
@@ -155,10 +163,10 @@ class LoginScreen extends StatelessWidget {
                                       suffixIcon: Icons.arrow_forward,
                                       onPressed: () {
                                         if (formKey.currentState!.validate()) {
-                                          // cubit.createUser(
-                                          //   email: emailController.text,
-                                          //   password: passwordController.text,
-                                          // );
+                                          cubit.loginUser(
+                                            email: emailController.text,
+                                            password: passwordController.text,
+                                          );
                                         }
                                       },
                                     ),
@@ -201,7 +209,7 @@ class LoginScreen extends StatelessWidget {
                           SizedBox(width: 5),
                           textButton(
                             onPressed: () {
-                              showToast(message: 'coming soon');
+                              navigateTo(context, RegisterScreen());
                             },
                             label: 'Sign In',
                           ),
