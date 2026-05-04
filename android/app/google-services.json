@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807230983825",
+    "project_id": "social-nexus-flutter",
+    "storage_bucket": "social-nexus-flutter.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807230983825:android:3b69a8d9b5bbd85dd53930",
+        "android_client_info": {
+          "package_name": "com.mis.flutter.nexus.nexus"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrXhI_MwHoYvaYK8XbLdqNS1Bydq9vSFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -39,6 +39,8 @@ dependencies:
   shared_preferences: ^2.5.5
   fluttertoast: ^9.0.0
   hybrid_tab_bar: ^1.0.0
+  firebase_core: ^4.7.0
+  firebase_auth: ^6.4.0
 
 dev_dependencies:
   flutter_test:

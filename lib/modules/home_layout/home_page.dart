@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hybrid_tab_bar/hybrid_tab_bar.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
+import 'package:nexus/shared/components/components.dart';
 import '../../assets/fonts/nexus_icons.dart';
 import '../../shared/styles/colors.dart';
 import 'cubit/home_states.dart';
@@ -32,15 +33,13 @@ class HomePage extends StatelessWidget {
           HomeCubit cubit = HomeCubit.get(context);
 
           return Scaffold(
-            appBar: AppBar(
-              title: Text('Nexus'),
+            // TODO: test this later.
+            appBar: appBar(
               actions: [
                 IconButton(onPressed: () {}, icon: Icon(NexusIcons.search)),
                 IconButton(onPressed: () {}, icon: Icon(NexusIcons.alert)),
                 IconButton(onPressed: () {}, icon: Icon(NexusIcons.settings)),
               ],
-              backgroundColor: Colors.white,
-              elevation: 0,
             ),
             body: bottomNavScreens[cubit.bottomNavCurrentIndex],
             bottomNavigationBar: Container(
