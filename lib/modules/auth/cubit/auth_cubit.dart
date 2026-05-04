@@ -9,6 +9,8 @@ class AuthCubit extends Cubit<AuthStates> {
 
   static AuthCubit get(BuildContext context) => BlocProvider.of(context);
 
+  bool isLoginPasswordVisible = false;
+
   void createUser({required String email, required String password}) {
     emit(AuthRegisterLoadingState());
 
@@ -35,5 +37,10 @@ class AuthCubit extends Cubit<AuthStates> {
           }
           emit(AuthRegisterErrorState(errorMessage: errorMessage));
         });
+  }
+
+  void toggleLoginPasswordVisibility() {
+    isLoginPasswordVisible = !isLoginPasswordVisible;
+    emit(AuthLoginPasswordVisibilityChangedState());
   }
 }

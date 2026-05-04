@@ -31,7 +31,9 @@ Widget formField({
   FontWeight labelWeight = FontWeight.bold,
   String? hint,
   IconData? prefixIcon,
+  double prefixIconSize = 20,
   IconData? suffixIcon,
+  double suffixIconSize = 20,
   Function? onSuffixIconTapped,
   TextInputType? inputType,
   bool hidePassword = false,
@@ -56,11 +58,12 @@ Widget formField({
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(inputFieldRadius),
         ),
-        prefixIcon: (suffixIcon != null) ? Icon(prefixIcon) : null,
+        prefixIcon: (prefixIcon != null) ? Icon(prefixIcon, size: prefixIconSize,) : null,
+        // TODO: fix the ripple effect bug here
         suffixIcon: (suffixIcon != null)
             ? InkWell(
                 onTap: () => onSuffixIconTapped?.call(),
-                child: Icon(suffixIcon),
+                child: Icon(suffixIcon, size: suffixIconSize,),
               )
             : null,
         hintText: hint,
@@ -87,6 +90,7 @@ Widget button({
   Color prefixIconColor = Colors.white,
   Color buttonColor = buttonBackgroundColor,
   bool isOutlined = false,
+  Color outlineColor = neutralColor,
 }) {
   return InkWell(
     onTap: () {
@@ -98,7 +102,7 @@ Widget button({
         color: buttonColor,
         borderRadius: BorderRadiusGeometry.circular(buttonRadius),
         border: isOutlined
-            ? BoxBorder.all(width: 1, color: neutralColor)
+            ? BoxBorder.all(width: 1, color: outlineColor)
             : null,
       ),
       child: Row(
@@ -147,18 +151,19 @@ Widget textButton({
   );
 }
 
-Widget horizontalDivider({String centerLabel = ''}) {
+Widget horizontalDivider({String? centerLabel}) {
   return Row(
     children: [
-      Expanded(child: Container(height: 1, color: neutralColor)),
-      Padding(
-        padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
-        child: Text(
-          centerLabel,
-          style: TextStyle(color: neutralColor, fontSize: labelSmallTextSize),
+      Expanded(child: Container(height: 0.7, color: neutralColor)),
+      if (centerLabel != null)
+        Padding(
+          padding: const EdgeInsetsDirectional.symmetric(horizontal: 20),
+          child: Text(
+            centerLabel,
+            style: TextStyle(color: neutralColor, fontSize: labelSmallTextSize),
+          ),
         ),
-      ),
-      Expanded(child: Container(height: 1, color: neutralColor)),
+      Expanded(child: Container(height: 0.7, color: neutralColor)),
     ],
   );
 }

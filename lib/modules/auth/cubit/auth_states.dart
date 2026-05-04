@@ -17,3 +17,18 @@ class AuthRegisterErrorState extends AuthStates {
 
   AuthRegisterErrorState({required this.errorMessage});
 }
+
+class AuthLoginPasswordVisibilityChangedState extends AuthStates {}
+class AuthLoginLoadingState extends AuthStates {}
+
+class AuthLoginSuccessState extends AuthStates {
+  final UserCredential credential;
+
+  AuthLoginSuccessState({required this.credential});
+}
+
+class AuthLoginErrorState extends AuthStates {
+  final String errorMessage;
+
+  AuthLoginErrorState({required this.errorMessage});
+}

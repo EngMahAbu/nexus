@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nexus/modules/auth/register_screen/register_screen.dart';
+import 'package:nexus/modules/auth/login_screen/login_screen.dart';
 import 'package:nexus/shared/styles/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: lightTheme,
-      home: RegisterScreen(),
+      home: LoginScreen(),
     );
   }
 }
