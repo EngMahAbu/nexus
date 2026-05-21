@@ -81,6 +81,8 @@ Widget formField({
 Widget button({
   required Function onPressed,
   required String label,
+  double height = 60,
+  double? width,
   Color labelColor = buttonLabelColor,
   double labelSize = labelSmallTextSize,
   FontWeight labelWeight = FontWeight.bold,
@@ -97,7 +99,8 @@ Widget button({
       onPressed.call();
     },
     child: Container(
-      height: 60,
+      height: height,
+      width: width,
       decoration: BoxDecoration(
         color: buttonColor,
         borderRadius: BorderRadiusGeometry.circular(buttonRadius),

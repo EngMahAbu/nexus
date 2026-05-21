@@ -18,6 +18,7 @@ const Color onBackgroundColor = Color(0xFF0b1c30);
 // Color surfaceColor = Color(0xFFf8f9ff);
 const Color surface2Color = Color(0xF3F4FAFF);
 const Color onSurfaceColor = Color(0xFF0b1c30);
+const Color lightGrey = Color(0xffedf2fd);
 
 const Color primaryColor15 = Color(0x26FF5200);
 const Color iconTintColor = Color(0xFF94A3B8);

@@ -9,6 +9,7 @@ class HomeCubit extends Cubit<HomeStates> {
   static HomeCubit get(BuildContext context) => BlocProvider.of(context);
 
   int bottomNavCurrentIndex = 0;
+  late User user;
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
@@ -18,7 +19,8 @@ class HomeCubit extends Cubit<HomeStates> {
   // TODO: for testing purposes only, remove later
   void getUser() {
     if (FirebaseAuth.instance.currentUser != null) {
-      emit(GotUser(FirebaseAuth.instance.currentUser!));
+      user = FirebaseAuth.instance.currentUser!;
+      emit(GotUser(user));
     } else {
       throw 'null user';
     }
