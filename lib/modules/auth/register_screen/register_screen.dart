@@ -28,7 +28,7 @@ class RegisterScreen extends StatelessWidget {
           if (state is AuthRegisterSuccessState) {
             // TODO: fix the null bug here
             showToast(
-              message: 'Welcome ${state.credential.user!.displayName}!',
+              message: 'Welcome ${state.userProfile.displayName}!',
               backgroundColor: Colors.green,
             );
             navigateToAndRemove(context, HomePage());

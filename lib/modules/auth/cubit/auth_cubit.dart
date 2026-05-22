@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:nexus/models/auth/user_profile.dart';
 import 'package:nexus/modules/auth/cubit/auth_states.dart';
 import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/network/local/shared_preferences_helper.dart';
 import 'package:nexus/shared/network/remote/firebase_auth_manager.dart';
+import 'package:nexus/shared/network/remote/firestore_manager.dart';
 
 class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(AuthInitialState());
@@ -22,11 +25,38 @@ class AuthCubit extends Cubit<AuthStates> {
 
     FirebaseAuthManager.createUser(email: email, password: password)
         .then((UserCredential credential) {
-          FirebaseAuthManager.updateUserName(name)
+          FirebaseAuthManager.updateDisplayName(name)
               .then((value) {
                 SharedPreferencesHelper.setData(userIdKey, credential.user!.uid)
                     .then((value) {
-                      emit(AuthRegisterSuccessState(credential: credential));
+                      UserProfile userProfile = UserProfile(
+                        user: credential.user!,
+                        displayName: name,
+                        username: name.toLowerCase().replaceAll(' ', '_'),
+                        photoUrl: null,
+                        coverPhotoUrl: null,
+                        bio: 'Tell others about you.',
+                        location: null,
+                        joiningDate: DateFormat(
+                          'MMMM yyyy',
+                        ).format(DateTime.now()),
+                      );
+                      FirestoreManager.updateUserProfile(userProfile)
+                          .then((value) {
+                            emit(
+                              AuthRegisterSuccessState(
+                                userProfile: userProfile,
+                              ),
+                            );
+                          })
+                          .catchError((error) {
+                            emit(
+                              AuthRegisterErrorState(
+                                errorMessage:
+                                    'Error happened while creating user profile: ${error.toString()}',
+                              ),
+                            );
+                          });
                     })
                     .catchError((error) {
                       emit(

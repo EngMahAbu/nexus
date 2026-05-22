@@ -21,7 +21,7 @@ class FirebaseAuthManager {
     );
   }
 
-  static Future<void> updateUserName(String name) async {
+  static Future<void> updateDisplayName(String name) async {
     return await FirebaseAuth.instance.currentUser?.updateDisplayName(name);
   }
 }

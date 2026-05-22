@@ -62,11 +62,11 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${cubit.user.displayName}',
+                    (state is GotUser) ? cubit.userProfile.displayName : '',
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '@jordan_nexus',
+                    '@${(state is GotUser) ? cubit.userProfile.username : ''}',
                     style: TextStyle(fontSize: 14, color: neutralColor),
                   ),
                   SizedBox(height: 20),
@@ -115,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    'Digital architect and brand strategist focusing on the intersection of professional growth and authentic social connection. Based in San Francisco. 🚀',
+                    (state is GotUser) ? cubit.userProfile.bio : '',
                     style: TextStyle(fontSize: 16, color: neutralColor),
                   ),
                   SizedBox(height: 10),
@@ -128,7 +128,10 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        'San Francisco, CA',
+                        (state is GotUser)
+                            ? ((cubit.userProfile.location) ??
+                                  'San Francisco, CA')
+                            : '',
                         style: TextStyle(
                           color: neutralColor,
                           fontWeight: FontWeight.bold,
@@ -156,7 +159,9 @@ class ProfileScreen extends StatelessWidget {
                       Icon(NexusIcons.calendar, size: 15, color: neutralColor),
                       SizedBox(width: 10),
                       Text(
-                        'Joined March 2023',
+                        (state is GotUser)
+                            ? 'Joined ${cubit.userProfile.joiningDate}'
+                            : '',
                         style: TextStyle(
                           color: neutralColor,
                           fontWeight: FontWeight.bold,
