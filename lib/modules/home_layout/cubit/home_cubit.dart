@@ -11,30 +11,70 @@ class HomeCubit extends Cubit<HomeStates> {
   static HomeCubit get(BuildContext context) => BlocProvider.of(context);
 
   int bottomNavCurrentIndex = 0;
-  late UserProfile userProfile;
+  UserProfile? _userProfile;
+
+  UserProfile get userProfile {
+    if (_userProfile == null) {
+      return getUserProfile();
+    }
+    return _userProfile!;
+  }
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
     emit(HomeBottomNavBarClickedState());
   }
 
-  // TODO: for testing purposes only, remove later
-  void getUser() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      User user = FirebaseAuth.instance.currentUser!;
-      FirestoreManager.getUserProfile(user.uid)
-          .then((value) {
-            userProfile = UserProfile.fromMap(
-              user: user,
-              json: value.data()!,
-            );
-            emit(GotUser(userProfile));
-          })
-          .catchError((error) {
-            throw error;
-          });
-    } else {
+  UserProfile getUserProfile() {
+    emit(ProfileGetLoadingState());
+
+    if (_userProfile != null) {
+      emit(ProfileGetSuccessState(userProfile));
+      return userProfile;
+    }
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
       throw 'null user';
     }
+
+    FirestoreManager.getUserProfile(user.uid)
+        .then((value) {
+          _userProfile = UserProfile.fromMap(user: user, json: value.data()!);
+          emit(ProfileGetSuccessState(userProfile));
+        })
+        .catchError((error) {
+          emit(
+            ProfileGetErrorState(
+              errorMessage: 'Error happened while getting user profile: $error',
+            ),
+          );
+        });
+    return userProfile;
+  }
+
+  void updateUserProfile(UserProfile newProfile) {
+    emit(ProfileUpdateLoadingState());
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      throw 'null user';
+    }
+
+    FirestoreManager.updateUserProfile(newProfile)
+        .then((value) {
+          _userProfile = newProfile;
+          emit(ProfileUpdateSuccessState(_userProfile!));
+        })
+        .catchError((error) {
+          emit(
+            ProfileUpdateErrorState(
+              errorMessage:
+                  'Error happened while updating user profile: $error',
+            ),
+          );
+        });
   }
 }

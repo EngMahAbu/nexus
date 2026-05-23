@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomeCubit cubit = HomeCubit.get(context)..getUser();
+    HomeCubit cubit = HomeCubit.get(context);
 
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {},
@@ -20,8 +20,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: .center,
           children: [
-            if (state is GotUser)
-              Text('Home Screen: ${state.user.displayName}'),
+            Text('Home Screen: ${cubit.userProfile.displayName}'),
           ],
         ),
       ),

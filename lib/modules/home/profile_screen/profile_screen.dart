@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/assets/fonts/nexus_icons.dart';
+import 'package:nexus/modules/edit_profile/edit_profile_screen.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
 import 'package:nexus/modules/home_layout/cubit/home_states.dart';
 import 'package:nexus/shared/components/components.dart';
@@ -11,7 +12,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomeCubit cubit = HomeCubit.get(context)..getUser();
+    HomeCubit cubit = HomeCubit.get(context);
 
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {},
@@ -62,11 +63,11 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    (state is GotUser) ? cubit.userProfile.displayName : '',
+                    cubit.userProfile.displayName,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '@${(state is GotUser) ? cubit.userProfile.username : ''}',
+                    '@${cubit.userProfile.username}',
                     style: TextStyle(fontSize: 14, color: neutralColor),
                   ),
                   SizedBox(height: 20),
@@ -75,8 +76,10 @@ class ProfileScreen extends StatelessWidget {
                       button(
                         height: 45,
                         width: 100,
-                        onPressed: () => {},
-                        label: 'Follow',
+                        onPressed: () => {
+                          navigateTo(context, EditProfileScreen()),
+                        },
+                        label: 'Edit Profile',
                       ),
                       SizedBox(width: 10),
                       Container(
@@ -115,7 +118,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    (state is GotUser) ? cubit.userProfile.bio : '',
+                    cubit.userProfile.bio,
                     style: TextStyle(fontSize: 16, color: neutralColor),
                   ),
                   SizedBox(height: 10),
@@ -128,10 +131,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Text(
-                        (state is GotUser)
-                            ? ((cubit.userProfile.location) ??
-                                  'San Francisco, CA')
-                            : '',
+                        cubit.userProfile.location ?? 'San Francisco, CA',
                         style: TextStyle(
                           color: neutralColor,
                           fontWeight: FontWeight.bold,
@@ -159,9 +159,7 @@ class ProfileScreen extends StatelessWidget {
                       Icon(NexusIcons.calendar, size: 15, color: neutralColor),
                       SizedBox(width: 10),
                       Text(
-                        (state is GotUser)
-                            ? 'Joined ${cubit.userProfile.joiningDate}'
-                            : '',
+                        'Joined ${cubit.userProfile.joiningDate}',
                         style: TextStyle(
                           color: neutralColor,
                           fontWeight: FontWeight.bold,

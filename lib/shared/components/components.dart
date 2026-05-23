@@ -30,6 +30,7 @@ Widget formField({
   Color labelColor = inputLabelColor,
   FontWeight labelWeight = FontWeight.bold,
   String? hint,
+  Color? backgroundColor,
   IconData? prefixIcon,
   double prefixIconSize = 20,
   IconData? suffixIcon,
@@ -40,6 +41,7 @@ Widget formField({
   TextEditingController? controller,
   Function(String?)? validator,
   Function(String?)? onSubmit,
+  Function(String)? onChanged,
 }) => Column(
   crossAxisAlignment: CrossAxisAlignment.start,
   children: [
@@ -55,6 +57,8 @@ Widget formField({
     TextFormField(
       controller: controller,
       decoration: InputDecoration(
+        filled: backgroundColor != null,
+        fillColor: backgroundColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(inputFieldRadius),
         ),
@@ -72,6 +76,7 @@ Widget formField({
       onFieldSubmitted: (value) => onSubmit?.call(value),
       obscureText: hidePassword,
       validator: (value) => validator?.call(value),
+      onChanged: (value) => onChanged?.call(value),
       keyboardType: inputType,
     ),
   ],
