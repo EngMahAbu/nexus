@@ -13,14 +13,14 @@ class HomeScreen extends StatelessWidget {
     return BlocConsumer<HomeCubit, HomeStates>(
       listener: (context, state) {},
       builder: (context, state) => Container(
-        height: 400,
-        width: 200,
         color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         child: Column(
           mainAxisAlignment: .center,
           children: [
-            Text('Home Screen: ${cubit.userProfile.displayName}'),
+            Text(
+              'Home Screen: ${(cubit.userProfile != null) ? cubit.userProfile!.displayName : 'Loading'}',
+            ),
           ],
         ),
       ),

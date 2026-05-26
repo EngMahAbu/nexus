@@ -33,3 +33,13 @@ class ProfileUpdateErrorState extends HomeStates {
 
   ProfileUpdateErrorState({required this.errorMessage});
 }
+
+class PhotoPickLoadingState extends HomeStates {}
+
+class PhotoPickSuccessState extends HomeStates {}
+
+class PhotoPickErrorState extends HomeStates {
+  final String errorMessage;
+
+  PhotoPickErrorState({required this.errorMessage});
+}
