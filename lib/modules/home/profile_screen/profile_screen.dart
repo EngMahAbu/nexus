@@ -8,6 +8,8 @@ import 'package:nexus/modules/home_layout/cubit/home_states.dart';
 import 'package:nexus/shared/components/components.dart';
 import 'package:nexus/shared/styles/colors.dart';
 
+const String profileUpdated = 'ProfileUpdated';
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -88,7 +90,11 @@ class ProfileScreen extends StatelessWidget {
                           height: 45,
                           width: 100,
                           onPressed: () => {
-                            navigateTo(context, EditProfileScreen()),
+                            navigateTo(context, EditProfileScreen()).then(
+                              (value) => cubit.getUserProfile(
+                                updateStatus: profileUpdated,
+                              ),
+                            ),
                           },
                           label: 'Edit Profile',
                         ),

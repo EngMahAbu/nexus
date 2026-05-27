@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/assets/fonts/nexus_icons.dart';
 import 'package:nexus/models/auth/user_profile.dart';
+import 'package:nexus/modules/home/profile_screen/profile_screen.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
 import 'package:nexus/modules/home_layout/cubit/home_states.dart';
 import 'package:nexus/shared/components/components.dart';
@@ -28,64 +29,64 @@ class EditProfileScreen extends StatelessWidget {
             fullNameController.text = cubit.userProfile!.displayName;
             usernameController.text = cubit.userProfile!.username;
             bioController.text = cubit.userProfile!.bio;
+          } else if (state is ProfileUpdateSuccessState) {
+            showToast(
+              message: 'Profile Updated Successfully!',
+              backgroundColor: Colors.green,
+            );
+            Navigator.pop(context, profileUpdated);
           }
-          // else if (state is ProfileUpdateSuccessState) {
-          //   showToast(
-          //     message: 'Profile Updated Successfully!',
-          //     backgroundColor: Colors.green,
-          //   );
-          //   Navigator.pop(context);
-          //   // TODO: let the profile screen UI refresh to reflex changes
-          // }
         },
         builder: (context, state) {
           HomeCubit cubit = HomeCubit.get(context);
 
-          return ConditionalBuilder(
-            condition: cubit.userProfile != null,
-            fallback: (context) => Center(child: CircularProgressIndicator()),
-            builder: (context) => Scaffold(
-              appBar: AppBar(
-                leadingWidth: 75,
-                leading: Container(
-                  padding: EdgeInsetsDirectional.only(start: 15),
-                  alignment: AlignmentDirectional.center,
-                  child: textButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    label: 'Cancel',
-                    labelColor: neutralColor,
-                    labelSize: 18,
-                  ),
+          return Scaffold(
+            appBar: AppBar(
+              leadingWidth: 75,
+              leading: Container(
+                padding: EdgeInsetsDirectional.only(start: 15),
+                alignment: AlignmentDirectional.center,
+                child: textButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  label: 'Cancel',
+                  labelColor: neutralColor,
+                  labelSize: 18,
                 ),
-                centerTitle: true,
-                titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
-                title: Text('Edit Profile'),
-                actions: [
-                  textButton(
-                    onPressed: () {
-                      UserProfile newProfile = cubit.userProfile!.update(
-                        displayName: fullNameController.text,
-                        username: usernameController.text,
-                        bio: bioController.text,
-                      );
-                      if (cubit.userProfile!.isDifferent(newProfile)) {
-                        cubit.updateUserProfile(newProfile);
-                      } else {
-                        showToast(
-                          message: 'User information has not changed',
-                          backgroundColor: Colors.amber,
-                        );
-                      }
-                    },
-                    label: 'Save',
-                    labelSize: 18,
-                  ),
-                ],
-                actionsPadding: EdgeInsetsDirectional.only(end: 20),
               ),
-              body: SingleChildScrollView(
+              centerTitle: true,
+              titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
+              title: Text('Edit Profile'),
+              actions: [
+                textButton(
+                  onPressed: () {
+                    UserProfile newProfile = cubit.userProfile!.update(
+                      displayName: fullNameController.text,
+                      username: usernameController.text,
+                      bio: bioController.text,
+                    );
+                    if (cubit.userProfile!.isDifferent(newProfile) ||
+                        cubit.avatarPhotoFile != null ||
+                        cubit.coverPhotoFile != null) {
+                      cubit.updateUserProfile(newProfile);
+                    } else {
+                      showToast(
+                        message: 'User information has not changed',
+                        backgroundColor: Colors.amber,
+                      );
+                    }
+                  },
+                  label: 'Save',
+                  labelSize: 18,
+                ),
+              ],
+              actionsPadding: EdgeInsetsDirectional.only(end: 20),
+            ),
+            body: ConditionalBuilder(
+              condition: cubit.userProfile != null,
+              fallback: (context) => Center(child: CircularProgressIndicator()),
+              builder: (context) => SingleChildScrollView(
                 child: Column(
                   children: [
                     // Cover & Avatar Area
@@ -95,16 +96,24 @@ class EditProfileScreen extends StatelessWidget {
                         Container(
                           height: 270,
                           alignment: Alignment.topCenter,
-                          child: Image(
-                            image: (cubit.userProfile!.coverPhotoUrl == null)
-                                ? AssetImage('lib/assets/cover_photo.png')
-                                : NetworkImage(
-                                    cubit.userProfile!.coverPhotoUrl!,
-                                  ),
-                            width: double.infinity,
-                            height: 200,
-                            fit: BoxFit.fill,
-                          ),
+                          child: (state is CoverPhotoPickSuccessState)
+                              ? Image(
+                                  image: FileImage(cubit.coverPhotoFile!),
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.fill,
+                                )
+                              : Image(
+                                  image:
+                                      (cubit.userProfile!.coverPhotoUrl == null)
+                                      ? AssetImage('lib/assets/cover_photo.png')
+                                      : NetworkImage(
+                                          cubit.userProfile!.coverPhotoUrl!,
+                                        ),
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.fill,
+                                ),
                         ),
                         Stack(
                           alignment: AlignmentGeometry.bottomEnd,
@@ -117,16 +126,29 @@ class EditProfileScreen extends StatelessWidget {
                                   shape: BoxShape.circle,
                                 ),
                                 clipBehavior: Clip.antiAlias,
-                                child: Image(
-                                  image: (cubit.userProfile!.photoUrl == null)
-                                      ? AssetImage('lib/assets/avatar.png')
-                                      : NetworkImage(
-                                          cubit.userProfile!.photoUrl!,
+                                child: (state is AvatarPhotoPickSuccessState)
+                                    ? Image(
+                                        image: FileImage(
+                                          cubit.avatarPhotoFile!,
                                         ),
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                ),
+                                        width: double.infinity,
+                                        height: 200,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : Image(
+                                        image:
+                                            (cubit.userProfile!.photoUrl ==
+                                                null)
+                                            ? AssetImage(
+                                                'lib/assets/avatar.png',
+                                              )
+                                            : NetworkImage(
+                                                cubit.userProfile!.photoUrl!,
+                                              ),
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                             ),
                             Padding(

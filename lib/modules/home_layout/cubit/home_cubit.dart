@@ -19,16 +19,18 @@ class HomeCubit extends Cubit<HomeStates> {
 
   int bottomNavCurrentIndex = 0;
   UserProfile? userProfile;
+  File? avatarPhotoFile;
+  File? coverPhotoFile;
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
     emit(HomeBottomNavBarClickedState());
   }
 
-  UserProfile? getUserProfile() {
+  UserProfile? getUserProfile({String? updateStatus}) {
     emit(ProfileGetLoadingState());
 
-    if (userProfile != null) {
+    if (userProfile != null && updateStatus == null) {
       emit(ProfileGetSuccessState(userProfile!));
       return userProfile!;
     }
@@ -53,13 +55,22 @@ class HomeCubit extends Cubit<HomeStates> {
     return userProfile;
   }
 
-  void updateUserProfile(UserProfile newProfile) {
+  void updateUserProfile(UserProfile newProfile) async {
     emit(ProfileUpdateLoadingState());
 
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
       throw 'null user';
+    }
+
+    if (avatarPhotoFile != null) {
+      await uploadAvatarPhoto();
+      newProfile.photoUrl = userProfile!.photoUrl;
+    }
+    if (coverPhotoFile != null) {
+      await uploadCoverPhoto();
+      newProfile.coverPhotoUrl = userProfile!.coverPhotoUrl;
     }
 
     FirestoreManager.updateUserProfile(newProfile)
@@ -78,58 +89,70 @@ class HomeCubit extends Cubit<HomeStates> {
   }
 
   void pickUserAvatarPhoto() async {
-    emit(PhotoPickLoadingState());
+    emit(AvatarPhotoPickLoadingState());
     FilePickerResult? result = await FilePicker.pickFiles();
 
     if (result != null) {
-      emit(PhotoPickSuccessState());
-      File file = File(result.files.single.path!);
-      SupabaseManager.uploadFile(file, usersAvatarsDirectory)
-          .then((value) {
-            String publicUrl = SupabaseManager.getPublicUrl(
-              file,
-              usersAvatarsDirectory,
-            );
-            updateUserProfile(userProfile!.update(photoUrl: publicUrl));
-          })
-          .catchError((error) {
-            emit(
-              PhotoPickErrorState(
-                errorMessage:
-                    'Error happened while uploading avatar photo: $error',
-              ),
-            );
-          });
+      emit(AvatarPhotoPickSuccessState());
+      avatarPhotoFile = File(result.files.single.path!);
     } else {
-      emit(PhotoPickErrorState(errorMessage: 'user canceled the picker'));
+      emit(AvatarPhotoPickErrorState(errorMessage: 'user canceled the picker'));
     }
   }
 
   void pickUserCoverPhoto() async {
-    emit(PhotoPickLoadingState());
+    emit(CoverPhotoPickLoadingState());
     FilePickerResult? result = await FilePicker.pickFiles();
 
     if (result != null) {
-      emit(PhotoPickSuccessState());
-      File file = File(result.files.single.path!);
-      SupabaseManager.uploadFile(file, usersCoversDirectory)
-          .then((value) {
-            String publicUrl = SupabaseManager.getPublicUrl(
-              file,
-              usersCoversDirectory,
-            );
-            updateUserProfile(userProfile!.update(coverPhotoUrl: publicUrl));
-          })
-          .catchError((error) {
-            emit(
-              PhotoPickErrorState(
-                errorMessage:
-                    'Error happened while uploading cover photo: $error',
-              ),
-            );
-          });
+      emit(CoverPhotoPickSuccessState());
+      coverPhotoFile = File(result.files.single.path!);
     } else {
-      emit(PhotoPickErrorState(errorMessage: 'user canceled the picker'));
+      emit(CoverPhotoPickErrorState(errorMessage: 'user canceled the picker'));
     }
+  }
+
+  Future uploadAvatarPhoto() {
+    emit(PhotoUploadLoadingState());
+
+    return SupabaseManager.uploadFile(avatarPhotoFile!, usersAvatarsDirectory)
+        .then((value) {
+          emit(PhotoUploadSuccessState());
+          String photoUrl = SupabaseManager.getPublicUrl(
+            avatarPhotoFile!,
+            usersAvatarsDirectory,
+          );
+          userProfile?.photoUrl = photoUrl;
+        })
+        .catchError((error) {
+          emit(
+            PhotoUploadErrorState(
+              errorMessage:
+                  'Error happened while uploading avatar photo: $error',
+            ),
+          );
+        });
+  }
+
+  Future uploadCoverPhoto() {
+    emit(PhotoUploadLoadingState());
+
+    return SupabaseManager.uploadFile(coverPhotoFile!, usersCoversDirectory)
+        .then((value) {
+          emit(PhotoUploadSuccessState());
+          String photoUrl = SupabaseManager.getPublicUrl(
+            coverPhotoFile!,
+            usersCoversDirectory,
+          );
+          userProfile?.coverPhotoUrl = photoUrl;
+        })
+        .catchError((error) {
+          emit(
+            PhotoUploadErrorState(
+              errorMessage:
+                  'Error happened while uploading cover photo: $error',
+            ),
+          );
+        });
   }
 }

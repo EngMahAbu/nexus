@@ -3,8 +3,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/styles/colors.dart';
 
-void navigateTo(BuildContext context, Widget targetPage) {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => targetPage));
+// Navigation Components
+Future<dynamic> navigateTo(BuildContext context, Widget targetPage) {
+  return Navigator.push(context, MaterialPageRoute(builder: (context) => targetPage));
 }
 
 void navigateToAndRemove(BuildContext context, Widget targetPage) {
@@ -15,6 +16,7 @@ void navigateToAndRemove(BuildContext context, Widget targetPage) {
   );
 }
 
+// UI Components
 PreferredSizeWidget appBar({String title = 'Nexus', List<Widget>? actions}) {
   return AppBar(
     title: Text('Nexus'),

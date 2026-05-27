@@ -34,12 +34,32 @@ class ProfileUpdateErrorState extends HomeStates {
   ProfileUpdateErrorState({required this.errorMessage});
 }
 
-class PhotoPickLoadingState extends HomeStates {}
+class CoverPhotoPickLoadingState extends HomeStates {}
 
-class PhotoPickSuccessState extends HomeStates {}
+class CoverPhotoPickSuccessState extends HomeStates {}
 
-class PhotoPickErrorState extends HomeStates {
+class CoverPhotoPickErrorState extends HomeStates {
   final String errorMessage;
 
-  PhotoPickErrorState({required this.errorMessage});
+  CoverPhotoPickErrorState({required this.errorMessage});
+}
+
+class AvatarPhotoPickLoadingState extends HomeStates {}
+
+class AvatarPhotoPickSuccessState extends HomeStates {}
+
+class AvatarPhotoPickErrorState extends HomeStates {
+  final String errorMessage;
+
+  AvatarPhotoPickErrorState({required this.errorMessage});
+}
+
+class PhotoUploadLoadingState extends HomeStates {}
+
+class PhotoUploadSuccessState extends HomeStates {}
+
+class PhotoUploadErrorState extends HomeStates {
+  final String errorMessage;
+
+  PhotoUploadErrorState({required this.errorMessage});
 }

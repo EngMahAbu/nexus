@@ -15,6 +15,11 @@ class SupabaseManager {
   static Future<String> uploadFile(File file, String path) {
     return Supabase.instance.client.storage
         .from(storageBucketId)
-        .upload('$path/${file.uri.pathSegments.last}', file);
+        .upload(
+          '$path/${file.uri.pathSegments.last}',
+          file,
+          // overwrite file if already exists
+          fileOptions: const FileOptions(upsert: true),
+        );
   }
 }
