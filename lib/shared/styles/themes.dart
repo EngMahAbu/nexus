@@ -1,17 +1,42 @@
-// import 'package:flutter/material.dart';
-// import 'colors.dart';
-//
-// // App Light Theme
-// ThemeData lightTheme = ThemeData(
+import 'package:flutter/material.dart';
+import 'colors.dart';
+
+// App Light Theme
+ThemeData lightTheme = ThemeData(
+  colorScheme: ColorScheme(
+    // Required
+    brightness: Brightness.light,
+    primary: primaryColor,
+    onPrimary: onPrimaryColor,
+    secondary: secondaryColor,
+    onSecondary: onSecondaryColor,
+    error: errorColor,
+    onError: onErrorColor,
+    surface: surface2Color,
+    onSurface: onSurfaceColor,
+    // Optional
+  ),
+  appBarTheme: AppBarThemeData(
+    titleTextStyle: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 24,
+      color: primaryColor,
+    ),
+    backgroundColor: Colors.white,
+    elevation: 20,
+    actionsPadding: EdgeInsetsDirectional.only(end: 10),
+    actionsIconTheme: IconThemeData(
+      color: neutralColor,
+      size: 20,
+    )
+  ),
+  scaffoldBackgroundColor: surface2Color,
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    selectedItemColor: primaryColor,
+  ),
+);
 //   primarySwatch: defaultColor,
-//   appBarTheme: AppBarThemeData(
-//     titleTextStyle: TextStyle(
-//       fontWeight: FontWeight.bold,
-//       fontSize: 24,
-//       color: Colors.black,
-//     ),
-//     backgroundColor: Colors.white,
-//   ),
+
 //   scaffoldBackgroundColor: Colors.white,
 //   floatingActionButtonTheme: FloatingActionButtonThemeData(
 //     backgroundColor: defaultColor,

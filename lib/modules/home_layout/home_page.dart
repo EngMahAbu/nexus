@@ -2,14 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hybrid_tab_bar/hybrid_tab_bar.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
-import 'package:nexus/shared/styles/colors.dart';
+import 'package:nexus/shared/components/components.dart';
 import '../../assets/fonts/nexus_icons.dart';
+import '../../shared/styles/colors.dart';
 import 'cubit/home_states.dart';
+import 'package:nexus/modules/home/chat_screen/chat_screen.dart';
+import 'package:nexus/modules/home/home_screen/home_screen.dart';
+import 'package:nexus/modules/home/new_post_screen/new_post_screen.dart';
+import 'package:nexus/modules/home/profile_screen/profile_screen.dart';
+import 'package:nexus/modules/home/users_screen/users_screen.dart';
 
-  class HomePage extends StatelessWidget {
-  const HomePage({super.key, required this.title});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  final String title;
+  final List<Widget> bottomNavScreens = [
+    HomeScreen(),
+    ChatScreen(),
+    NewPostScreen(),
+    UsersScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -20,58 +32,54 @@ import 'cubit/home_states.dart';
         builder: (context, state) {
           HomeCubit cubit = HomeCubit.get(context);
 
-          // return HybridTabBarScaffold(
-          //     style: HybridTabStyle(
-          //       activeColor: primaryColor,
-          //       bottomPillColor: primaryColor15,
-          //     ),
-          //     backgroundColor: Colors.green,
-          //     bottomItems: const [
-          //       // This item HAS segmented sub-tabs
-          //       HybridNavItem(
-          //         icon: Icons.explore,
-          //         label: "Explore",
-          //         // segmentedTabs: ["Rooms", "Inspiration", "Profiles"],
-          //       ),
-          //       // These items have NO sub-tabs
-          //       HybridNavItem(icon: Icons.auto_awesome, label: "Assistant"),
-          //       HybridNavItem(icon: Icons.settings, label: "Configs"),
-          //     ],
-          //     bodyBuilder: (bottomIndex, segmentedIndex) {
-          //       // bottomIndex  → which bottom nav item is active (0, 1, 2)
-          //       // segmentedIndex → which sub-tab is active (0, 1, 2) if applicable
-          //       return cubit.bottomNavScreens[bottomIndex];
-          //     },
-          //   );
-
           return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: Text(title),
+            // TODO: test this later.
+            appBar: appBar(
               actions: [
-                Icon(Icons.notifications),
-                Icon(Icons.search),
-                Icon(Icons.settings),
+                IconButton(onPressed: () {}, icon: Icon(NexusIcons.search)),
+                IconButton(onPressed: () {}, icon: Icon(NexusIcons.alert)),
+                IconButton(onPressed: () {}, icon: Icon(NexusIcons.settings)),
               ],
             ),
-            body: cubit.bottomNavScreens[cubit.bottomNavCurrentIndex],
+            body: bottomNavScreens[cubit.bottomNavCurrentIndex],
             bottomNavigationBar: Container(
-              padding: EdgeInsetsDirectional.only(bottom: 30, start: 10, end: 10),
+              padding: EdgeInsetsDirectional.only(
+                bottom: 30,
+                start: 10,
+                end: 10,
+              ),
+              margin: EdgeInsets.all(5),
               child: HybridBottomBar(
                 items: [
-                  HybridNavItem(icon: NexusIcons.home, label: "Home"),
-                  HybridNavItem(icon: Icons.search, label: "Search"),
-                  HybridNavItem(icon: Icons.person, label: "Profile"),
+                  HybridNavItem(icon: NexusIcons.home, label: "HOME"),
+                  HybridNavItem(icon: NexusIcons.chats, label: "CHAT"),
+                  HybridNavItem(
+                    icon: NexusIcons.plus_circle,
+                    label: "NEW POST",
+                  ),
+                  HybridNavItem(icon: Icons.people_outline, label: "USERS"),
+                  HybridNavItem(
+                    icon: NexusIcons.profile_outlined,
+                    label: "PROFILE",
+                  ),
                 ],
                 currentIndex: cubit.bottomNavCurrentIndex,
                 onItemTapped: (index) => cubit.changeBottomNavBar(index),
                 style: HybridTabStyle(
-                  activeColor: primaryColor,
-                  bottomPillColor: primaryColor15,
+                  activeColor: Theme.of(
+                    context,
+                  ).bottomNavigationBarTheme.selectedItemColor,
+                  bottomPillColor: primaryColor.withAlpha(15),
+                  inactiveColor: neutralColor,
+                  bottomLabelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: neutralColor,
+                  ),
                 ),
-                showContainer: false,  // Wraps in external glass container
+                showContainer: false, // Wraps in external glass container
               ),
-            ) ,
+            ),
           );
         },
       ),
