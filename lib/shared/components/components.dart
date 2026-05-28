@@ -5,7 +5,10 @@ import 'package:nexus/shared/styles/colors.dart';
 
 // Navigation Components
 Future<dynamic> navigateTo(BuildContext context, Widget targetPage) {
-  return Navigator.push(context, MaterialPageRoute(builder: (context) => targetPage));
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => targetPage),
+  );
 }
 
 void navigateToAndRemove(BuildContext context, Widget targetPage) {
@@ -17,8 +20,13 @@ void navigateToAndRemove(BuildContext context, Widget targetPage) {
 }
 
 // UI Components
-PreferredSizeWidget appBar({String title = 'Nexus', List<Widget>? actions}) {
+PreferredSizeWidget appBar({
+  Widget? leading,
+  String title = 'Nexus',
+  List<Widget>? actions,
+}) {
   return AppBar(
+    leading: leading,
     title: Text('Nexus'),
     actions: actions,
     backgroundColor: Colors.white,
@@ -64,12 +72,14 @@ Widget formField({
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(inputFieldRadius),
         ),
-        prefixIcon: (prefixIcon != null) ? Icon(prefixIcon, size: prefixIconSize,) : null,
+        prefixIcon: (prefixIcon != null)
+            ? Icon(prefixIcon, size: prefixIconSize)
+            : null,
         // TODO: fix the ripple effect bug here
         suffixIcon: (suffixIcon != null)
             ? InkWell(
                 onTap: () => onSuffixIconTapped?.call(),
-                child: Icon(suffixIcon, size: suffixIconSize,),
+                child: Icon(suffixIcon, size: suffixIconSize),
               )
             : null,
         hintText: hint,
@@ -100,6 +110,7 @@ Widget button({
   Color buttonColor = buttonBackgroundColor,
   bool isOutlined = false,
   Color outlineColor = neutralColor,
+  double radius = buttonRadius,
 }) {
   return InkWell(
     onTap: () {
@@ -110,7 +121,7 @@ Widget button({
       width: width,
       decoration: BoxDecoration(
         color: buttonColor,
-        borderRadius: BorderRadiusGeometry.circular(buttonRadius),
+        borderRadius: BorderRadiusGeometry.circular(radius),
         border: isOutlined
             ? BoxBorder.all(width: 1, color: outlineColor)
             : null,
@@ -156,6 +167,43 @@ Widget textButton({
         color: labelColor,
         fontSize: labelSize,
         fontWeight: labelWeight,
+      ),
+    ),
+  );
+}
+
+// TODO: fix the ripple effect bug later
+Widget secondaryButton({
+  required double width,
+  double height = 40,
+  required Function onPressed,
+  required String label,
+  Color labelColor = textButtonLabelColor,
+  double labelSize = 12,
+  Color backgroundColor = surfaceContainerLowColor,
+  IconData? icon,
+}) {
+  return InkWell(
+    onTap: () {
+      onPressed.call();
+    },
+    child: Container(
+      height: height,
+      width: width,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadiusGeometry.circular(5),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (icon != null) Icon(icon, color: labelColor, size: 20),
+          if (icon != null) SizedBox(width: 10),
+          Text(
+            label,
+            style: TextStyle(color: labelColor, fontSize: labelSize),
+          ),
+        ],
       ),
     ),
   );

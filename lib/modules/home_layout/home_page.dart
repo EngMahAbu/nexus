@@ -35,11 +35,34 @@ class HomePage extends StatelessWidget {
           return Scaffold(
             // TODO: test this later.
             appBar: appBar(
-              actions: [
-                IconButton(onPressed: () {}, icon: Icon(NexusIcons.search)),
-                IconButton(onPressed: () {}, icon: Icon(NexusIcons.alert)),
-                IconButton(onPressed: () {}, icon: Icon(NexusIcons.settings)),
-              ],
+              leading: (cubit.bottomNavCurrentIndex == 2)
+                  ? IconButton(onPressed: () {}, icon: Icon(Icons.close))
+                  : null,
+              actions: (cubit.bottomNavCurrentIndex == 2)
+                  ? [
+                      button(
+                        onPressed: () {},
+                        label: 'Post',
+                        buttonColor: primaryColor,
+                        width: 90,
+                        height: 40,
+                        radius: 20,
+                      ),
+                    ]
+                  : [
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(NexusIcons.search),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(NexusIcons.alert),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Icon(NexusIcons.settings),
+                      ),
+                    ],
             ),
             body: bottomNavScreens[cubit.bottomNavCurrentIndex],
             bottomNavigationBar: Container(
