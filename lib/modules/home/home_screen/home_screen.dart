@@ -21,6 +21,7 @@ class HomeScreen extends StatelessWidget {
             Text(
               'Home Screen: ${(cubit.userProfile != null) ? cubit.userProfile!.displayName : 'Loading'}',
             ),
+            Text('We have: ${cubit.postsList.length} posts'),
           ],
         ),
       ),

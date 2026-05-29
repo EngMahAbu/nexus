@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hybrid_tab_bar/hybrid_tab_bar.dart';
+import 'package:nexus/models/post.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
 import 'package:nexus/shared/components/components.dart';
 import '../../assets/fonts/nexus_icons.dart';
@@ -28,7 +29,14 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => HomeCubit(),
       child: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is PostCreationSuccessState) {
+            showToast(
+              message: 'Post Created Successfully!',
+              backgroundColor: Colors.green,
+            );
+          }
+        },
         builder: (context, state) {
           HomeCubit cubit = HomeCubit.get(context);
 
@@ -41,7 +49,13 @@ class HomePage extends StatelessWidget {
               actions: (cubit.bottomNavCurrentIndex == 2)
                   ? [
                       button(
-                        onPressed: () {},
+                        onPressed: () {
+                          Post newPost = Post.create(
+                            authorUid: cubit.userProfile!.user.uid,
+                            textContent: NewPostScreen.postContent,
+                          );
+                          cubit.createPost(newPost);
+                        },
                         label: 'Post',
                         buttonColor: primaryColor,
                         width: 90,

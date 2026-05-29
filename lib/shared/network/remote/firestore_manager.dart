@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/auth/user_profile.dart';
+import 'package:nexus/models/post.dart';
 
 // const String
 
 class FirestoreManager {
+  // User Profile Utilities
   static Future<void> updateUserProfile(UserProfile profile) {
     return FirebaseFirestore.instance
         .collection('UserProfiles')
@@ -26,5 +28,14 @@ class FirestoreManager {
         .collection('UserProfiles')
         .doc(userId)
         .get();
+  }
+
+  // Post Utilities
+  static Future<DocumentReference<Map<String, dynamic>>> createPost(Post post) {
+    return FirebaseFirestore.instance.collection('Posts').add(post.toMap());
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getPostsDocs() {
+    return FirebaseFirestore.instance.collection('Posts').get();
   }
 }

@@ -9,6 +9,8 @@ import '../../home_layout/cubit/home_states.dart';
 class NewPostScreen extends StatelessWidget {
   const NewPostScreen({super.key});
 
+  static String postContent = '';
+
   @override
   Widget build(BuildContext context) {
     HomeCubit cubit = HomeCubit.get(context);
@@ -105,6 +107,9 @@ class NewPostScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+                    onChanged: (value) {
+                      postContent = value;
+                    },
                   ),
                   SizedBox(height: 10),
                   // Options Area

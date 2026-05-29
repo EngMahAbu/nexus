@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nexus/modules/auth/login_screen/login_screen.dart';
 import 'package:nexus/modules/home_layout/home_page.dart';
+import 'package:nexus/shared/components/bloc/my_bloc_observer.dart';
 import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/network/local/shared_preferences_helper.dart';
 import 'package:nexus/shared/styles/themes.dart';
@@ -18,6 +20,7 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
   String? userId = await SharedPreferencesHelper.getString(userIdKey);
+  Bloc.observer = MyBlocObserver();
   runApp(MyApp(userId: userId));
 }
 

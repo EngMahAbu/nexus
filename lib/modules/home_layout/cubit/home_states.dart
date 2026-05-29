@@ -63,3 +63,23 @@ class PhotoUploadErrorState extends HomeStates {
 
   PhotoUploadErrorState({required this.errorMessage});
 }
+
+class PostCreationLoadingState extends HomeStates {}
+
+class PostCreationSuccessState extends HomeStates {}
+
+class PostCreationErrorState extends HomeStates {
+  final String errorMessage;
+
+  PostCreationErrorState({required this.errorMessage});
+}
+
+class PostsGetLoadingState extends HomeStates {}
+
+class PostsGetSuccessState extends HomeStates {}
+
+class PostsGetErrorState extends HomeStates {
+  final String errorMessage;
+
+  PostsGetErrorState({required this.errorMessage});
+}
