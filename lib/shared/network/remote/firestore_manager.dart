@@ -38,4 +38,21 @@ class FirestoreManager {
   static Future<QuerySnapshot<Map<String, dynamic>>> getPostsDocs() {
     return FirebaseFirestore.instance.collection('Posts').get();
   }
+
+  static Future<void> submitPostLike(
+    String postUid,
+    String userUid,
+    bool isLiked,
+  ) async {
+    DocumentSnapshot<Map<String, dynamic>> docSnap = await FirebaseFirestore
+        .instance
+        .collection('Posts')
+        .doc(postUid)
+        .get();
+    List<dynamic> list = docSnap.get('likesList');
+    isLiked ? list.remove(userUid) : list.add(userUid);
+    return FirebaseFirestore.instance.collection('Posts').doc(postUid).update({
+      'likesList': list,
+    });
+  }
 }

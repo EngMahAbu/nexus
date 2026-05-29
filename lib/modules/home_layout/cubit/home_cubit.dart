@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus/models/auth/user_profile.dart';
 import 'package:nexus/models/post.dart';
+import 'package:nexus/models/post_author.dart';
 import 'package:nexus/modules/home_layout/cubit/home_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/shared/network/remote/firestore_manager.dart';
@@ -163,7 +164,10 @@ class HomeCubit extends Cubit<HomeStates> {
   void createPost(Post post) {
     emit(PostCreationLoadingState());
     FirestoreManager.createPost(post)
-        .then((value) {
+        .then((value) async {
+          PostAuthor author = await getPostAuthor(userProfile!.user.uid);
+          post.postAuthor = author;
+          post.uid = value.id;
           emit(PostCreationSuccessState());
         })
         .catchError((error) {
@@ -178,9 +182,15 @@ class HomeCubit extends Cubit<HomeStates> {
   void getPosts() {
     emit(PostsGetLoadingState());
     FirestoreManager.getPostsDocs()
-        .then((value) {
+        .then((value) async {
           for (QueryDocumentSnapshot doc in value.docs) {
-            postsList.add(Post.fromMap(doc.data() as Map<String, dynamic>));
+            Post post = Post.fromMap(doc.data() as Map<String, dynamic>);
+            PostAuthor author = await getPostAuthor(doc.get('authorUid'));
+            post.postAuthor = author;
+            post.uid = doc.id;
+            List<dynamic> likesList = doc.get('likesList');
+            post.isLiked = likesList.contains(userProfile!.user.uid);
+            postsList.add(post);
           }
           emit(PostsGetSuccessState());
         })
@@ -188,6 +198,58 @@ class HomeCubit extends Cubit<HomeStates> {
           emit(
             PostsGetErrorState(
               errorMessage: 'Error happened while creating post: $error',
+            ),
+          );
+        });
+  }
+
+  Future<PostAuthor> getPostAuthor(String authorUid) async {
+    emit(PostAuthorGetLoadingState());
+
+    DocumentSnapshot<Map<String, dynamic>>? docSnap =
+        await FirestoreManager.getUserProfile(authorUid).catchError((error) {
+          emit(
+            PostAuthorGetErrorState(
+              errorMessage:
+                  'Error happened while getting post author data: $error',
+            ),
+          );
+          return null;
+        });
+
+    emit(PostAuthorGetSuccessState());
+    return PostAuthor(
+      displayName: docSnap.get('displayName'),
+      photoUrl: docSnap.get('photoUrl'),
+    );
+  }
+
+  void likePost(Post post) {
+    emit(PostLikeLoadingState());
+
+    FirestoreManager.submitPostLike(
+          post.uid,
+          userProfile!.user.uid,
+          post.isLiked,
+        )
+        .then((value) {
+          // modify local version instead of fetching remote
+          if (post.isLiked) {
+            postsList[postsList.indexOf(post)].likesList.remove(
+              userProfile!.user.uid,
+            );
+          } else {
+            postsList[postsList.indexOf(post)].likesList.add(
+              userProfile!.user.uid,
+            );
+          }
+          postsList[postsList.indexOf(post)].isLiked = !post.isLiked;
+          emit(PostLikeSuccessState());
+        })
+        .catchError((error) {
+          emit(
+            PostLikeErrorState(
+              errorMessage: 'Error happened while submitting post like: $error',
             ),
           );
         });

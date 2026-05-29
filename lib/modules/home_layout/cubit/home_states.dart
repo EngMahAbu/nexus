@@ -83,3 +83,23 @@ class PostsGetErrorState extends HomeStates {
 
   PostsGetErrorState({required this.errorMessage});
 }
+
+class PostAuthorGetLoadingState extends HomeStates {}
+
+class PostAuthorGetSuccessState extends HomeStates {}
+
+class PostAuthorGetErrorState extends HomeStates {
+  final String errorMessage;
+
+  PostAuthorGetErrorState({required this.errorMessage});
+}
+
+class PostLikeLoadingState extends HomeStates {}
+
+class PostLikeSuccessState extends HomeStates {}
+
+class PostLikeErrorState extends HomeStates {
+  final String errorMessage;
+
+  PostLikeErrorState({required this.errorMessage});
+}
