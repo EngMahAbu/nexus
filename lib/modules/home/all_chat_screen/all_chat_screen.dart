@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+class AllChatsScreen extends StatelessWidget {
+  const AllChatsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Center(
         child: Column(
           mainAxisAlignment: .center,
-          children: [const Text('This is the Chat Screen')],
+          children: [const Text('This is the AllChats Screen')],
         ),
       );
   }

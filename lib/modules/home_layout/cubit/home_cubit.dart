@@ -16,6 +16,7 @@ class HomeCubit extends Cubit<HomeStates> {
     if (state is HomeInitialState) {
       getUserProfile();
       getPosts();
+      getAllUsers();
     }
   }
 
@@ -26,6 +27,7 @@ class HomeCubit extends Cubit<HomeStates> {
   File? avatarPhotoFile;
   File? coverPhotoFile;
   List<Post> postsList = [];
+  List<UserProfile> allUsersList = [];
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
@@ -250,6 +252,47 @@ class HomeCubit extends Cubit<HomeStates> {
           emit(
             PostLikeErrorState(
               errorMessage: 'Error happened while submitting post like: $error',
+            ),
+          );
+        });
+  }
+
+  void getAllUsers() {
+    emit(AllUsersGetLoadingState());
+
+    if (allUsersList.isNotEmpty) {
+      emit(AllUsersGetSuccessState());
+      return;
+    }
+
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      throw 'Error happened while getting firebase user';
+    }
+
+    FirestoreManager.getAllUsers()
+        .then((value) {
+          value.docs.removeWhere(
+            (element) => (element.id == userProfile!.user.uid),
+          );
+          value.docs.forEach(
+            (element) => allUsersList.add(
+              UserProfile.other(
+                uid: element.id,
+                photoUrl: element.data()['photoUrl'],
+                displayName: element.data()['displayName'],
+                bio: element.data()['bio'],
+              ),
+            ),
+          );
+          emit(AllUsersGetSuccessState());
+          return;
+        })
+        .catchError((error) {
+          emit(
+            AllUsersGetErrorState(
+              errorMessage: 'Error happened while getting all users: $error',
             ),
           );
         });

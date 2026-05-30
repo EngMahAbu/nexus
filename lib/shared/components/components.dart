@@ -226,6 +226,10 @@ Widget horizontalDivider({String? centerLabel}) {
   );
 }
 
+Widget verticalDivider({double height = 40}) {
+  return Container(width: 1.3, height: height, color: neutralColor);
+}
+
 void showToast({
   required String message,
   Color textColor = Colors.white,

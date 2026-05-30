@@ -30,6 +30,10 @@ class FirestoreManager {
         .get();
   }
 
+  static Future<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+    return FirebaseFirestore.instance.collection('UserProfiles').get();
+  }
+
   // Post Utilities
   static Future<DocumentReference<Map<String, dynamic>>> createPost(Post post) {
     return FirebaseFirestore.instance.collection('Posts').add(post.toMap());

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfile {
+  // Remote
   late User user;
   late String displayName;
   late String username;
@@ -9,6 +10,9 @@ class UserProfile {
   late String bio;
   late String? location;
   late String joiningDate;
+
+  // Local
+  late String uid;
 
   UserProfile({
     required this.user,
@@ -34,9 +38,7 @@ class UserProfile {
     joiningDate = json['joiningDate'];
   }
 
-  UserProfile.copy({
-    required UserProfile oldProfile
-  }) {
+  UserProfile.copy({required UserProfile oldProfile}) {
     user = oldProfile.user;
     displayName = oldProfile.displayName;
     username = oldProfile.username;
@@ -46,6 +48,14 @@ class UserProfile {
     location = oldProfile.location;
     joiningDate = oldProfile.joiningDate;
   }
+
+  // To show other profiles
+  UserProfile.other({
+    required this.uid,
+    required this.photoUrl,
+    required this.displayName,
+    required this.bio,
+  });
 
   UserProfile update({
     User? user,
