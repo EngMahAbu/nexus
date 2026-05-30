@@ -6,6 +6,16 @@ class HomeInitialState extends HomeStates {}
 
 class HomeBottomNavBarClickedState extends HomeStates {}
 
+class AllUsersGetLoadingState extends HomeStates {}
+
+class AllUsersGetSuccessState extends HomeStates {}
+
+class AllUsersGetErrorState extends HomeStates {
+  final String errorMessage;
+
+  AllUsersGetErrorState({required this.errorMessage});
+}
+
 class ProfileGetLoadingState extends HomeStates {}
 
 class ProfileGetSuccessState extends HomeStates {

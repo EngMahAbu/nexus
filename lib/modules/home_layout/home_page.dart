@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hybrid_tab_bar/hybrid_tab_bar.dart';
 import 'package:nexus/models/post.dart';
+import 'package:nexus/modules/home/all_chat_screen/all_chat_screen.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
 import 'package:nexus/shared/components/components.dart';
 import '../../assets/fonts/nexus_icons.dart';
 import '../../shared/styles/colors.dart';
 import 'cubit/home_states.dart';
-import 'package:nexus/modules/home/chat_screen/chat_screen.dart';
 import 'package:nexus/modules/home/home_screen/home_screen.dart';
 import 'package:nexus/modules/home/new_post_screen/new_post_screen.dart';
 import 'package:nexus/modules/home/profile_screen/profile_screen.dart';
@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
 
   final List<Widget> bottomNavScreens = [
     HomeScreen(),
-    ChatScreen(),
+    AllChatsScreen(),
     NewPostScreen(),
     UsersScreen(),
     ProfileScreen(),
