@@ -9,6 +9,7 @@ import 'package:nexus/shared/network/local/shared_preferences_helper.dart';
 import 'package:nexus/shared/styles/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'modules/home_layout/cubit/home_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +32,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      home: (userId == null) ? LoginScreen() : HomePage(),
+    return BlocProvider(
+      create: (context) => HomeCubit(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        home: (userId == null) ? LoginScreen() : HomePage(),
+      ),
     );
   }
 }

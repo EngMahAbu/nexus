@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nexus/models/auth/user_profile.dart';
+import 'package:nexus/models/message.dart';
 import 'package:nexus/models/post.dart';
 import 'package:nexus/models/post_author.dart';
 import 'package:nexus/modules/home_layout/cubit/home_states.dart';
@@ -28,6 +29,7 @@ class HomeCubit extends Cubit<HomeStates> {
   File? coverPhotoFile;
   List<Post> postsList = [];
   List<UserProfile> allUsersList = [];
+  List<Message> messagesList = [];
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
@@ -273,9 +275,10 @@ class HomeCubit extends Cubit<HomeStates> {
 
     FirestoreManager.getAllUsers()
         .then((value) {
-          value.docs.removeWhere(
-            (element) => (element.id == userProfile!.user.uid),
-          );
+          // TODO: Test the remove function here. It may not be working.
+          // value.docs.removeWhere(
+          //   (element) => (element.id == userProfile!.user.uid),
+          // );
           value.docs.forEach(
             (element) => allUsersList.add(
               UserProfile.other(
@@ -296,5 +299,45 @@ class HomeCubit extends Cubit<HomeStates> {
             ),
           );
         });
+  }
+
+  void sendMessage(String receiverUid, Message message) {
+    emit(ChatMessagesSendLoadingState());
+
+    FirestoreManager.createMessage(message, userProfile!.user.uid, receiverUid)
+        .then((value) {
+          emit(ChatMessagesSendSuccessState());
+        })
+        .catchError((error) {
+          emit(
+            ChatMessagesSendErrorState(
+              errorMessage: 'Error happened while creating a message: $error',
+            ),
+          );
+        });
+  }
+
+  void getChatMessages(String receiverUid) {
+    emit(ChatMessagesGetLoadingState());
+
+    FirestoreManager.getMessages(userProfile!.user.uid, receiverUid).listen(
+      (event) {
+        event.docChanges.forEach((change) {
+          // TODO: Modify this after adding editing/removing functionalities
+          if (change.type == DocumentChangeType.added) {
+            messagesList.add(Message.fromMap(change.doc.data()!));
+          }
+        });
+        emit(ChatMessagesGetSuccessState());
+      },
+      onError: (error) {
+        emit(
+          ChatMessagesGetErrorState(
+            errorMessage:
+                'Error happened while reading messages stream: $error',
+          ),
+        );
+      },
+    );
   }
 }

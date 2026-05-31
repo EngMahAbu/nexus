@@ -1,5 +1,5 @@
-import 'package:intl/intl.dart';
 import 'package:nexus/models/post_author.dart';
+import 'package:nexus/shared/date_time_helper.dart';
 
 class Post {
   // Cloud fields
@@ -36,7 +36,7 @@ class Post {
     likesList = [];
     commentsList = [];
     sharesCounter = 0;
-    createdAt = DateFormat('d MMMM yyyy hh:mm a').format(DateTime.now());
+    createdAt = DateTimeHelper.getCurrentDateTime();
   }
 
   Post.fromMap(Map<String, dynamic> postMap) {

@@ -113,3 +113,23 @@ class PostLikeErrorState extends HomeStates {
 
   PostLikeErrorState({required this.errorMessage});
 }
+
+class ChatMessagesSendLoadingState extends HomeStates {}
+
+class ChatMessagesSendSuccessState extends HomeStates {}
+
+class ChatMessagesSendErrorState extends HomeStates {
+  final String errorMessage;
+
+  ChatMessagesSendErrorState({required this.errorMessage});
+}
+
+class ChatMessagesGetLoadingState extends HomeStates {}
+
+class ChatMessagesGetSuccessState extends HomeStates {}
+
+class ChatMessagesGetErrorState extends HomeStates {
+  final String errorMessage;
+
+  ChatMessagesGetErrorState({required this.errorMessage});
+}

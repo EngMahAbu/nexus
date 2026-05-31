@@ -26,100 +26,84 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeCubit(),
-      child: BlocConsumer<HomeCubit, HomeStates>(
-        listener: (context, state) {
-          if (state is PostCreationSuccessState) {
-            showToast(
-              message: 'Post Created Successfully!',
-              backgroundColor: Colors.green,
-            );
-          }
-        },
-        builder: (context, state) {
-          HomeCubit cubit = HomeCubit.get(context);
-
-          return Scaffold(
-            // TODO: test this later.
-            appBar: appBar(
-              leading: (cubit.bottomNavCurrentIndex == 2)
-                  ? IconButton(onPressed: () {}, icon: Icon(Icons.close))
-                  : null,
-              actions: (cubit.bottomNavCurrentIndex == 2)
-                  ? [
-                      button(
-                        onPressed: () {
-                          Post newPost = Post.create(
-                            authorUid: cubit.userProfile!.user.uid,
-                            textContent: NewPostScreen.postContent,
-                          );
-                          cubit.createPost(newPost);
-                        },
-                        label: 'Post',
-                        buttonColor: primaryColor,
-                        width: 90,
-                        height: 40,
-                        radius: 20,
-                      ),
-                    ]
-                  : [
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(NexusIcons.search),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(NexusIcons.alert),
-                      ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: Icon(NexusIcons.settings),
-                      ),
-                    ],
-            ),
-            body: bottomNavScreens[cubit.bottomNavCurrentIndex],
-            bottomNavigationBar: Container(
-              padding: EdgeInsetsDirectional.only(
-                bottom: 30,
-                start: 10,
-                end: 10,
-              ),
-              margin: EdgeInsets.all(5),
-              child: HybridBottomBar(
-                items: [
-                  HybridNavItem(icon: NexusIcons.home, label: "HOME"),
-                  HybridNavItem(icon: NexusIcons.chats, label: "CHAT"),
-                  HybridNavItem(
-                    icon: NexusIcons.plus_circle,
-                    label: "NEW POST",
-                  ),
-                  HybridNavItem(icon: Icons.people_outline, label: "USERS"),
-                  HybridNavItem(
-                    icon: NexusIcons.profile_outlined,
-                    label: "PROFILE",
-                  ),
-                ],
-                currentIndex: cubit.bottomNavCurrentIndex,
-                onItemTapped: (index) => cubit.changeBottomNavBar(index),
-                style: HybridTabStyle(
-                  activeColor: Theme.of(
-                    context,
-                  ).bottomNavigationBarTheme.selectedItemColor,
-                  bottomPillColor: primaryColor.withAlpha(15),
-                  inactiveColor: neutralColor,
-                  bottomLabelStyle: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: neutralColor,
-                  ),
-                ),
-                showContainer: false, // Wraps in external glass container
-              ),
-            ),
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {
+        if (state is PostCreationSuccessState) {
+          showToast(
+            message: 'Post Created Successfully!',
+            backgroundColor: Colors.green,
           );
-        },
-      ),
+        }
+      },
+      builder: (context, state) {
+        HomeCubit cubit = HomeCubit.get(context);
+
+        return Scaffold(
+          // TODO: test this later.
+          appBar: appBar(
+            leading: (cubit.bottomNavCurrentIndex == 2)
+                ? IconButton(onPressed: () {}, icon: Icon(Icons.close))
+                : null,
+            actions: (cubit.bottomNavCurrentIndex == 2)
+                ? [
+                    button(
+                      onPressed: () {
+                        Post newPost = Post.create(
+                          authorUid: cubit.userProfile!.user.uid,
+                          textContent: NewPostScreen.postContent,
+                        );
+                        cubit.createPost(newPost);
+                      },
+                      label: 'Post',
+                      buttonColor: primaryColor,
+                      width: 90,
+                      height: 40,
+                      radius: 20,
+                    ),
+                  ]
+                : [
+                    IconButton(onPressed: () {}, icon: Icon(NexusIcons.search)),
+                    IconButton(onPressed: () {}, icon: Icon(NexusIcons.alert)),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(NexusIcons.settings),
+                    ),
+                  ],
+          ),
+          body: bottomNavScreens[cubit.bottomNavCurrentIndex],
+          bottomNavigationBar: Container(
+            padding: EdgeInsetsDirectional.only(bottom: 30, start: 10, end: 10),
+            margin: EdgeInsets.all(5),
+            child: HybridBottomBar(
+              items: [
+                HybridNavItem(icon: NexusIcons.home, label: "HOME"),
+                HybridNavItem(icon: NexusIcons.chats, label: "CHAT"),
+                HybridNavItem(icon: NexusIcons.plus_circle, label: "NEW POST"),
+                HybridNavItem(icon: Icons.people_outline, label: "USERS"),
+                HybridNavItem(
+                  icon: NexusIcons.profile_outlined,
+                  label: "PROFILE",
+                ),
+              ],
+              currentIndex: cubit.bottomNavCurrentIndex,
+              onItemTapped: (index) => cubit.changeBottomNavBar(index),
+              style: HybridTabStyle(
+                activeColor: Theme.of(
+                  context,
+                ).bottomNavigationBarTheme.selectedItemColor,
+                bottomPillColor: primaryColor.withAlpha(15),
+                inactiveColor: neutralColor,
+                bottomLabelStyle: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: neutralColor,
+                ),
+              ),
+              showContainer: false, // Wraps in external glass container
+            ),
+          ),
+        );
+      },
     );
   }
 }

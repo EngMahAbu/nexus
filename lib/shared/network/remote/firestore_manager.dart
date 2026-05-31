@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/auth/user_profile.dart';
+import 'package:nexus/models/message.dart';
 import 'package:nexus/models/post.dart';
 
 // const String
@@ -58,5 +59,44 @@ class FirestoreManager {
     return FirebaseFirestore.instance.collection('Posts').doc(postUid).update({
       'likesList': list,
     });
+  }
+
+  // Chat Utilities
+  static Future<DocumentReference<Map<String, dynamic>>> createMessage(
+    Message message,
+    String senderUid,
+    String receiverUid,
+  ) {
+    // Sender version
+    FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(senderUid)
+        .collection('Chats')
+        .doc(receiverUid)
+        .collection('Messages')
+        .add(message.toMap());
+
+    // Receiver version
+    return FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(receiverUid)
+        .collection('Chats')
+        .doc(senderUid)
+        .collection('Messages')
+        .add(message.toMap());
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(
+    String senderUid,
+    String receiverUid,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(senderUid)
+        .collection('Chats')
+        .doc(receiverUid)
+        .collection('Messages')
+        .orderBy('dateTime')
+        .snapshots();
   }
 }
