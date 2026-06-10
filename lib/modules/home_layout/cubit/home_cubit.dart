@@ -29,7 +29,9 @@ class HomeCubit extends Cubit<HomeStates> {
   File? coverPhotoFile;
   List<Post> postsList = [];
   List<UserProfile> allUsersList = [];
+  bool messagesLoadingTriggered = false;
   List<Message> messagesList = [];
+  List<UserProfile> chatUserProfilesList = [];
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
@@ -335,6 +337,42 @@ class HomeCubit extends Cubit<HomeStates> {
           ChatMessagesGetErrorState(
             errorMessage:
                 'Error happened while reading messages stream: $error',
+          ),
+        );
+      },
+    );
+  }
+
+  void getChatProfiles() {
+    if (chatUserProfilesList.isNotEmpty) {
+      return;
+    }
+
+    emit(ChatsProfilesGetLoadingState());
+
+    FirestoreManager.getChatsForUser(userProfile!.user.uid).then(
+      (value) async {
+        for (DocumentSnapshot doc in value.docs) {
+          DocumentSnapshot<Map<String, dynamic>> profileSnapshot =
+              await FirestoreManager.getUserProfile(doc.id);
+          chatUserProfilesList.add(
+            UserProfile.forChat(
+              uid: profileSnapshot.id,
+              photoUrl: profileSnapshot.data()!['photoUrl'],
+              displayName: profileSnapshot.data()!['displayName'],
+            ),
+          );
+          // Emit after populating the list
+          if (value.docs.last.id == doc.id) {
+            emit(ChatsProfilesGetSuccessState());
+          }
+        }
+      },
+      onError: (error) {
+        emit(
+          ChatsProfilesGetErrorState(
+            errorMessage:
+                'Error happened while getting chats user profiles: $error',
           ),
         );
       },

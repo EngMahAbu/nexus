@@ -62,11 +62,34 @@ class FirestoreManager {
   }
 
   // Chat Utilities
+  static Future<void> createChatPathIfNotExist(
+    String senderUid,
+    String receiverUid,
+  ) {
+    FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(senderUid)
+        .collection('Chats')
+        .doc(receiverUid)
+        .set({'Messages': []}, SetOptions(merge: true));
+
+    // Receiver version
+    return FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(receiverUid)
+        .collection('Chats')
+        .doc(senderUid)
+        .set({}, SetOptions(merge: true));
+  }
+
   static Future<DocumentReference<Map<String, dynamic>>> createMessage(
     Message message,
     String senderUid,
     String receiverUid,
-  ) {
+  ) async {
+    // Check for Non-existent parent documents [Firebase Terms]
+    await createChatPathIfNotExist(senderUid, receiverUid);
+
     // Sender version
     FirebaseFirestore.instance
         .collection('UserProfiles')
@@ -98,5 +121,15 @@ class FirestoreManager {
         .collection('Messages')
         .orderBy('dateTime')
         .snapshots();
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getChatsForUser(
+    String userUid,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(userUid)
+        .collection('Chats')
+        .get();
   }
 }
