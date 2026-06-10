@@ -57,6 +57,13 @@ class UserProfile {
     required this.bio,
   });
 
+  // To show chat profiles
+  UserProfile.forChat({
+    required this.uid,
+    required this.photoUrl,
+    required this.displayName,
+  });
+
   UserProfile update({
     User? user,
     String? displayName,

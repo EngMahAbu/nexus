@@ -3,9 +3,10 @@ import 'package:nexus/models/auth/user_profile.dart';
 abstract class HomeStates {}
 
 class HomeInitialState extends HomeStates {}
-
+// UI States
 class HomeBottomNavBarClickedState extends HomeStates {}
 
+// Auth (User & Profile) States
 class AllUsersGetLoadingState extends HomeStates {}
 
 class AllUsersGetSuccessState extends HomeStates {}
@@ -64,6 +65,7 @@ class AvatarPhotoPickErrorState extends HomeStates {
   AvatarPhotoPickErrorState({required this.errorMessage});
 }
 
+// File Handling States
 class PhotoUploadLoadingState extends HomeStates {}
 
 class PhotoUploadSuccessState extends HomeStates {}
@@ -74,6 +76,7 @@ class PhotoUploadErrorState extends HomeStates {
   PhotoUploadErrorState({required this.errorMessage});
 }
 
+// Post States
 class PostCreationLoadingState extends HomeStates {}
 
 class PostCreationSuccessState extends HomeStates {}
@@ -114,6 +117,7 @@ class PostLikeErrorState extends HomeStates {
   PostLikeErrorState({required this.errorMessage});
 }
 
+// Chat States
 class ChatMessagesSendLoadingState extends HomeStates {}
 
 class ChatMessagesSendSuccessState extends HomeStates {}
@@ -132,4 +136,14 @@ class ChatMessagesGetErrorState extends HomeStates {
   final String errorMessage;
 
   ChatMessagesGetErrorState({required this.errorMessage});
+}
+
+class ChatsProfilesGetLoadingState extends HomeStates {}
+
+class ChatsProfilesGetSuccessState extends HomeStates {}
+
+class ChatsProfilesGetErrorState extends HomeStates {
+  final String errorMessage;
+
+  ChatsProfilesGetErrorState({required this.errorMessage});
 }

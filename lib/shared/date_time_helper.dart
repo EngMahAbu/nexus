@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+// TODO: place this into a suitable directory
+
 class DateTimeHelper {
   static const String dateTimePattern = 'd MMMM yyyy hh:mm a';
   static const String timeOnlyPattern = 'hh:mm a';

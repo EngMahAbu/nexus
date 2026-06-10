@@ -20,8 +20,9 @@ class ChatScreen extends StatelessWidget {
       listener: (context, state) {},
       builder: (context, state) {
         HomeCubit cubit = HomeCubit.get(context);
-        if (cubit.messagesList.isEmpty) {
+        if (cubit.messagesList.isEmpty && !cubit.messagesLoadingTriggered) {
           cubit.getChatMessages(otherUser.uid);
+          cubit.messagesLoadingTriggered = true;
         }
 
         TextEditingController messageFieldController = TextEditingController();
@@ -79,97 +80,101 @@ class ChatScreen extends StatelessWidget {
               end: 20,
               bottom: 20,
             ),
-            child: ConditionalBuilder(
-              condition: cubit.messagesList.isNotEmpty,
-              fallback: (context) => Center(child: CircularProgressIndicator()),
-              builder: (context) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ConditionalBuilder(
+                  condition: cubit.messagesList.isNotEmpty,
+                  fallback: (context) =>
+                      Center(child: CircularProgressIndicator()),
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child:
+                    // Messages List Area
+                    ListView.separated(
+                      itemBuilder: (context, index) => messageItemBuilder(
+                        cubit.messagesList[index],
+                        cubit,
+                        messagesListViewController,
+                      ),
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: 15),
+                      itemCount: cubit.messagesList.length,
+                      shrinkWrap: true,
+                      controller: messagesListViewController,
+                    ),
+                  ),
+                                ),
+                ),
+                // Sending Message Area
+                Row(
                   children: [
-                    Expanded(
-                      child: ListView.separated(
-                        itemBuilder: (context, index) => messageItemBuilder(
-                          cubit.messagesList[index],
-                          cubit,
-                          messagesListViewController,
-                        ),
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 15),
-                        itemCount: cubit.messagesList.length,
-                        shrinkWrap: true,
-                        controller: messagesListViewController,
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        NexusIcons.plus_circle,
+                        size: 25,
+                        color: neutralColor,
                       ),
                     ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            NexusIcons.plus_circle,
-                            size: 25,
-                            color: neutralColor,
+                    SizedBox(width: 5),
+                    Expanded(
+                      child: TextFormField(
+                        controller: messageFieldController,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: surfaceContainerHighestColor.withAlpha(
+                            128,
                           ),
-                        ),
-                        SizedBox(width: 5),
-                        Expanded(
-                          child: TextFormField(
-                            controller: messageFieldController,
-                            textAlignVertical: TextAlignVertical.center,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: surfaceContainerHighestColor.withAlpha(
-                                128,
-                              ),
-                              border: UnderlineInputBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                borderSide: BorderSide(
-                                  width: 0,
-                                  style: BorderStyle.none,
-                                ),
-                              ),
-                              hint: Text('Type a message...'),
-                              suffixIcon: IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  NexusIcons.camera_outlined,
-                                  size: 20,
-                                  color: neutralColor,
-                                ),
-                              ),
+                          border: UnderlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            borderSide: BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
                             ),
                           ),
-                        ),
-                        SizedBox(width: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: buttonBackgroundColor,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              if (messageFieldController.text == '') return;
-
-                              cubit.sendMessage(
-                                otherUser.uid,
-                                Message(
-                                  senderUid: cubit.userProfile!.user.uid,
-                                  textContent: messageFieldController.text,
-                                  receiverUid: otherUser.uid,
-                                ),
-                              );
-                            },
-                            iconSize: 20,
+                          hint: Text('Type a message...'),
+                          suffixIcon: IconButton(
+                            onPressed: () {},
                             icon: Icon(
-                              NexusIcons.send_arrow_forward,
-                              color: Colors.white,
+                              NexusIcons.camera_outlined,
+                              size: 20,
+                              color: neutralColor,
                             ),
                           ),
                         ),
-                      ],
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: buttonBackgroundColor,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          if (messageFieldController.text == '') return;
+
+                          cubit.sendMessage(
+                            otherUser.uid,
+                            Message(
+                              senderUid: cubit.userProfile!.user.uid,
+                              textContent: messageFieldController.text,
+                              receiverUid: otherUser.uid,
+                            ),
+                          );
+                        },
+                        iconSize: 20,
+                        icon: Icon(
+                          NexusIcons.send_arrow_forward,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ),
         );
