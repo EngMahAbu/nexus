@@ -3,6 +3,7 @@ import 'package:nexus/models/auth/user_profile.dart';
 abstract class HomeStates {}
 
 class HomeInitialState extends HomeStates {}
+
 // UI States
 class HomeBottomNavBarClickedState extends HomeStates {}
 
@@ -146,4 +147,35 @@ class ChatsProfilesGetErrorState extends HomeStates {
   final String errorMessage;
 
   ChatsProfilesGetErrorState({required this.errorMessage});
+}
+
+// Notifications
+class NotificationsSendLoadingState extends HomeStates {}
+
+class NotificationsSendSuccessState extends HomeStates {}
+
+class NotificationsSendErrorState extends HomeStates {
+  final String errorMessage;
+
+  NotificationsSendErrorState({required this.errorMessage});
+}
+
+class NotificationsGetLoadingState extends HomeStates {}
+
+class NotificationsGetSuccessState extends HomeStates {}
+
+class NotificationsGetErrorState extends HomeStates {
+  final String errorMessage;
+
+  NotificationsGetErrorState({required this.errorMessage});
+}
+
+class NotificationSaveLoadingState extends HomeStates {}
+
+class NotificationSaveSuccessState extends HomeStates {}
+
+class NotificationSaveErrorState extends HomeStates {
+  final String errorMessage;
+
+  NotificationSaveErrorState({required this.errorMessage});
 }

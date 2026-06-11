@@ -46,3 +46,4 @@ app.*.map.json
 
 # Hidden environment variables
 lib/secrets.env
+/lib/assets/social-nexus-flutter-0d3a95074b6a.json

@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserProfile {
   // Remote
-  late User user;
+  late User user; // Stored in Firebase Auth
   late String displayName;
   late String username;
   late String? photoUrl;
@@ -10,6 +10,7 @@ class UserProfile {
   late String bio;
   late String? location;
   late String joiningDate;
+  late String fcmToken;
 
   // Local
   late String uid;
@@ -23,6 +24,7 @@ class UserProfile {
     required this.bio,
     required this.location,
     required this.joiningDate,
+    required this.fcmToken,
   });
 
   UserProfile.fromMap({
@@ -36,6 +38,7 @@ class UserProfile {
     bio = json['bio'];
     location = json['location'];
     joiningDate = json['joiningDate'];
+    fcmToken = json['fcmToken'];
   }
 
   UserProfile.copy({required UserProfile oldProfile}) {
@@ -47,6 +50,7 @@ class UserProfile {
     bio = oldProfile.bio;
     location = oldProfile.location;
     joiningDate = oldProfile.joiningDate;
+    fcmToken = oldProfile.fcmToken;
   }
 
   // To show other profiles
@@ -62,6 +66,7 @@ class UserProfile {
     required this.uid,
     required this.photoUrl,
     required this.displayName,
+    required this.fcmToken,
   });
 
   UserProfile update({
@@ -73,6 +78,7 @@ class UserProfile {
     String? bio,
     String? location,
     String? joiningDate,
+    String? fcmToken,
   }) {
     UserProfile newProfile = UserProfile.copy(oldProfile: this);
     newProfile.user = user ?? newProfile.user;
@@ -83,6 +89,7 @@ class UserProfile {
     newProfile.bio = bio ?? newProfile.bio;
     newProfile.location = location ?? newProfile.location;
     newProfile.joiningDate = joiningDate ?? newProfile.joiningDate;
+    newProfile.fcmToken = fcmToken ?? newProfile.fcmToken;
 
     return newProfile;
   }
@@ -95,9 +102,24 @@ class UserProfile {
         coverPhotoUrl != other.coverPhotoUrl ||
         bio != other.bio ||
         location != other.location ||
-        joiningDate != other.joiningDate) {
+        joiningDate != other.joiningDate ||
+        fcmToken != other.fcmToken
+    ) {
       return true;
     }
     return false;
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'displayName': displayName,
+      'username': username,
+      'photoUrl': photoUrl,
+      'coverPhotoUrl': coverPhotoUrl,
+      'bio': bio,
+      'location': location,
+      'joiningDate': joiningDate,
+      'fcmToken': fcmToken,
+    };
   }
 }

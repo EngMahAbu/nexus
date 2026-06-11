@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nexus/models/auth/user_profile.dart';
 import 'package:nexus/models/message.dart';
+import 'package:nexus/models/notification.dart';
 import 'package:nexus/models/post.dart';
 
-// const String
 
 class FirestoreManager {
   // User Profile Utilities
@@ -11,15 +11,7 @@ class FirestoreManager {
     return FirebaseFirestore.instance
         .collection('UserProfiles')
         .doc(profile.user.uid)
-        .set({
-          'displayName': profile.displayName,
-          'username': profile.username,
-          'photoUrl': profile.photoUrl,
-          'coverPhotoUrl': profile.coverPhotoUrl,
-          'bio': profile.bio,
-          'location': profile.location,
-          'joiningDate': profile.joiningDate,
-        });
+        .set(profile.toMap());
   }
 
   static Future<DocumentSnapshot<Map<String, dynamic>>> getUserProfile(
@@ -130,6 +122,29 @@ class FirestoreManager {
         .collection('UserProfiles')
         .doc(userUid)
         .collection('Chats')
+        .get();
+  }
+
+  // Notifications Utilities
+  static Future<DocumentReference<Map<String, dynamic>>> saveNotification(
+    Notification notification,
+    String receiverUid,
+  ) async {
+    return FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(receiverUid)
+        .collection('Notifications')
+        .add(notification.toMap());
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>> getNotifications(
+    String userUid,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('UserProfiles')
+        .doc(userUid)
+        .collection('Notifications')
+        .orderBy('dateTime')
         .get();
   }
 }

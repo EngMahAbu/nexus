@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus/models/auth/user_profile.dart';
 import 'package:nexus/modules/auth/cubit/auth_states.dart';
+import 'package:nexus/shared/components/app_cache.dart';
 import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/network/local/shared_preferences_helper.dart';
 import 'package:nexus/shared/network/remote/firebase_auth_manager.dart';
@@ -28,7 +29,7 @@ class AuthCubit extends Cubit<AuthStates> {
           FirebaseAuthManager.updateDisplayName(name)
               .then((value) {
                 SharedPreferencesHelper.setData(userIdKey, credential.user!.uid)
-                    .then((value) {
+                    .then((value) async {
                       UserProfile userProfile = UserProfile(
                         user: credential.user!,
                         displayName: name,
@@ -37,6 +38,7 @@ class AuthCubit extends Cubit<AuthStates> {
                         coverPhotoUrl: null,
                         bio: 'Tell others about you.',
                         location: null,
+                        fcmToken: AppCache().fcmToken,
                         joiningDate: DateFormat(
                           'MMMM yyyy',
                         ).format(DateTime.now()),
