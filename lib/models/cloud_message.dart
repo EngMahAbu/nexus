@@ -1,28 +1,27 @@
 enum CloudMessageType { postLike, postComment, postShare }
 
 class CloudMessage {
-  late String name; // server-generated id
+  // late String name; // server-generated id
   late Map<String, dynamic> data;
-  late NotificationData notification;
+  late NotificationData notificationData;
   String? token;
   String? topic;
 
   CloudMessage.withToken({
     required this.data,
-    required this.notification,
+    required this.notificationData,
     required this.token,
   });
 
   CloudMessage.withTopic({
     required this.data,
-    required this.notification,
+    required this.notificationData,
     required this.topic,
   });
 
   CloudMessage.fromMap(Map<String, dynamic> messageMap) {
-    name = messageMap['name'];
     data = messageMap['data'];
-    notification = NotificationData.fromMap(messageMap['notification']);
+    notificationData = NotificationData.fromMap(messageMap['notification']);
     token = messageMap['token'];
     token = messageMap['topic'];
   }
@@ -32,7 +31,7 @@ class CloudMessage {
       "message": {
         // "name": name,
         "data": data,
-        "notification": notification.toMap(),
+        "notification": notificationData.toMap(),
         // "android": {
         //   object (AndroidConfig)
         // },
@@ -58,16 +57,16 @@ class CloudMessage {
 
 // Basic notification template to use across all platforms.
 class NotificationData {
-  String? title;
-  String? body;
+  String title;
+  String body;
   String? image;
 
-  NotificationData({this.title, this.body, this.image});
+  NotificationData({required this.title, required this.body, this.image});
 
-  NotificationData.fromMap(Map<String, dynamic> notificationMap) {
-    title = notificationMap['title'];
-    body = notificationMap['body'];
-    image = notificationMap['image'];
+  NotificationData.fromMap(Map<String, dynamic> notificationDataMap)
+    : title = notificationDataMap['title'],
+      body = notificationDataMap['body'] {
+    image = notificationDataMap['image'];
   }
 
   Map<String, dynamic> toMap() {

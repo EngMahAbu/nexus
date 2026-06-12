@@ -39,6 +39,7 @@ class HomeCubit extends Cubit<HomeStates> {
   bool messagesLoadingTriggered = false;
   List<Message> messagesList = [];
   List<UserProfile> chatUserProfilesList = [];
+  bool notificationsLoadingTriggered = false;
   List<Notification> notificationsList = [];
 
   void changeBottomNavBar(int newIndex) {
@@ -260,25 +261,25 @@ class HomeCubit extends Cubit<HomeStates> {
             );
             // Send notification to post author (if not you)
             if (userProfile!.user.uid == post.postAuthor.uid) return;
-            CloudMessage message = CloudMessage.withToken(
+            CloudMessage cloudMessage = CloudMessage.withToken(
               data: {
                 "type": CloudMessageType.postLike.name,
                 "senderUid": userProfile!.user.uid,
                 "postUid": post.uid,
                 "dateTime": DateTimeHelper.getCurrentDateTime(),
               },
-              notification: NotificationData(
+              notificationData: NotificationData(
                 title: "${userProfile!.displayName} Liked Your Post",
                 body:
                     "Your post seems to get ${userProfile!.displayName}'s attention",
               ),
               token: post.postAuthor.fcmToken,
             );
-            Response response = await sendNotification(message);
+            Response response = await sendNotification(cloudMessage);
             Map<String, dynamic> responseMap = jsonDecode(response.body);
             Notification notification = Notification(
               name: responseMap['name'],
-              message: message,
+              cloudMessage: cloudMessage,
               senderUid: userProfile!.user.uid,
               sendDate: DateTimeHelper.getCurrentDateTime(),
             );
@@ -433,7 +434,6 @@ class HomeCubit extends Cubit<HomeStates> {
     // });
   }
 
-  // TODO: This logic is to be completed in the next commit
   void getNotificationsHistory() {
     if (notificationsList.isNotEmpty) {
       return;

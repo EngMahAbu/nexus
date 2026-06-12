@@ -144,7 +144,7 @@ class FirestoreManager {
         .collection('UserProfiles')
         .doc(userUid)
         .collection('Notifications')
-        .orderBy('dateTime')
+        .orderBy('sendDate')
         .get();
   }
 }
