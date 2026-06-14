@@ -13,7 +13,6 @@ import 'package:nexus/models/post_author.dart';
 import 'package:nexus/models/notification.dart';
 import 'package:nexus/modules/home_layout/cubit/home_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nexus/shared/components/app_cache.dart';
 import 'package:nexus/shared/date_time_helper.dart';
 import 'package:nexus/shared/network/remote/firebase_cloud_messaging_manager.dart';
 import 'package:nexus/shared/network/remote/firestore_manager.dart';
@@ -396,7 +395,7 @@ class HomeCubit extends Cubit<HomeStates> {
               uid: profileSnapshot.id,
               photoUrl: profileSnapshot.data()!['photoUrl'],
               displayName: profileSnapshot.data()!['displayName'],
-              fcmToken: AppCache().fcmToken,
+              fcmToken: FirebaseCloudMessagingManager.fcmToken,
             ),
           );
           // Emit after populating the list
