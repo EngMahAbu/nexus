@@ -61,7 +61,9 @@ class HomeScreen extends StatelessWidget {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: Image(
-                      image: NetworkImage(post.postAuthor.photoUrl),
+                      image: (post.postAuthor.photoUrl != null)
+                          ? NetworkImage(post.postAuthor.photoUrl!)
+                          : AssetImage('lib/assets/avatar.png'),
                       height: 50,
                       width: 50,
                       fit: BoxFit.cover,

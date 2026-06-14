@@ -1,14 +1,20 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
+import 'package:http/http.dart';
 import 'package:nexus/models/auth/user_profile.dart';
+import 'package:nexus/models/cloud_message.dart';
 import 'package:nexus/models/message.dart';
 import 'package:nexus/models/post.dart';
 import 'package:nexus/models/post_author.dart';
+import 'package:nexus/models/notification.dart';
 import 'package:nexus/modules/home_layout/cubit/home_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nexus/shared/date_time_helper.dart';
+import 'package:nexus/shared/network/remote/firebase_cloud_messaging_manager.dart';
 import 'package:nexus/shared/network/remote/firestore_manager.dart';
 import 'package:nexus/shared/network/remote/supabase_manager.dart';
 
@@ -32,6 +38,8 @@ class HomeCubit extends Cubit<HomeStates> {
   bool messagesLoadingTriggered = false;
   List<Message> messagesList = [];
   List<UserProfile> chatUserProfilesList = [];
+  bool notificationsLoadingTriggered = false;
+  List<Notification> notificationsList = [];
 
   void changeBottomNavBar(int newIndex) {
     bottomNavCurrentIndex = newIndex;
@@ -220,13 +228,15 @@ class HomeCubit extends Cubit<HomeStates> {
                   'Error happened while getting post author data: $error',
             ),
           );
-          return null;
+          throw error;
         });
 
     emit(PostAuthorGetSuccessState());
     return PostAuthor(
+      uid: docSnap.id,
       displayName: docSnap.get('displayName'),
       photoUrl: docSnap.get('photoUrl'),
+      fcmToken: docSnap.get('fcmToken'),
     );
   }
 
@@ -238,7 +248,7 @@ class HomeCubit extends Cubit<HomeStates> {
           userProfile!.user.uid,
           post.isLiked,
         )
-        .then((value) {
+        .then((value) async {
           // modify local version instead of fetching remote
           if (post.isLiked) {
             postsList[postsList.indexOf(post)].likesList.remove(
@@ -248,6 +258,31 @@ class HomeCubit extends Cubit<HomeStates> {
             postsList[postsList.indexOf(post)].likesList.add(
               userProfile!.user.uid,
             );
+            // Send notification to post author (if not you)
+            if (userProfile!.user.uid == post.postAuthor.uid) return;
+            CloudMessage cloudMessage = CloudMessage.withToken(
+              data: {
+                "type": CloudMessageType.postLike.name,
+                "senderUid": userProfile!.user.uid,
+                "postUid": post.uid,
+                "dateTime": DateTimeHelper.getCurrentDateTime(),
+              },
+              notificationData: NotificationData(
+                title: "${userProfile!.displayName} Liked Your Post",
+                body:
+                    "Your post seems to get ${userProfile!.displayName}'s attention",
+              ),
+              token: post.postAuthor.fcmToken,
+            );
+            Response response = await sendNotification(cloudMessage);
+            Map<String, dynamic> responseMap = jsonDecode(response.body);
+            Notification notification = Notification(
+              name: responseMap['name'],
+              cloudMessage: cloudMessage,
+              senderUid: userProfile!.user.uid,
+              sendDate: DateTimeHelper.getCurrentDateTime(),
+            );
+            await saveNotification(notification, post.postAuthor.uid);
           }
           postsList[postsList.indexOf(post)].isLiked = !post.isLiked;
           emit(PostLikeSuccessState());
@@ -360,6 +395,7 @@ class HomeCubit extends Cubit<HomeStates> {
               uid: profileSnapshot.id,
               photoUrl: profileSnapshot.data()!['photoUrl'],
               displayName: profileSnapshot.data()!['displayName'],
+              fcmToken: FirebaseCloudMessagingManager.fcmToken,
             ),
           );
           // Emit after populating the list
@@ -373,6 +409,72 @@ class HomeCubit extends Cubit<HomeStates> {
           ChatsProfilesGetErrorState(
             errorMessage:
                 'Error happened while getting chats user profiles: $error',
+          ),
+        );
+      },
+    );
+  }
+
+  Future<Response> sendNotification(CloudMessage message) async {
+    // TODO: modify this to add states
+    // emit(NotificationsSendLoadingState());
+    return FirebaseCloudMessagingManager.sendNotification(message: message);
+    // .then((value) {
+    //   emit(NotificationsSendSuccessState());
+    //   // return value;
+    // })
+    // .catchError((error) {
+    //   emit(
+    //     NotificationsSendErrorState(
+    //       errorMessage:
+    //           "Error occurred while sending a notification: $error",
+    //     ),
+    //   );
+    // });
+  }
+
+  void getNotificationsHistory() {
+    if (notificationsList.isNotEmpty) {
+      return;
+    }
+
+    emit(NotificationsGetLoadingState());
+
+    FirestoreManager.getNotifications(userProfile!.user.uid).then(
+      (value) async {
+        for (DocumentSnapshot doc in value.docs) {
+          Notification notification = Notification.fromMap(
+            doc.data() as Map<String, dynamic>,
+          );
+          notification.id = doc.id;
+          notificationsList.add(notification);
+          // Emit after populating the list
+          if (value.docs.last.id == doc.id) {
+            emit(NotificationsGetSuccessState());
+          }
+        }
+      },
+      onError: (error) {
+        emit(
+          NotificationsGetErrorState(
+            errorMessage:
+                'Error happened while getting user notifications: $error',
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> saveNotification(Notification notification, String receiverUid) {
+    emit(NotificationSaveLoadingState());
+
+    return FirestoreManager.saveNotification(notification, receiverUid).then(
+      (value) => emit(NotificationSaveSuccessState()),
+      onError: (error) {
+        emit(
+          NotificationSaveErrorState(
+            errorMessage:
+                'Error happened while saving notification to history: $error',
           ),
         );
       },

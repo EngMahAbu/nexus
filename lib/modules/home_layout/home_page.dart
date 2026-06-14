@@ -4,6 +4,7 @@ import 'package:hybrid_tab_bar/hybrid_tab_bar.dart';
 import 'package:nexus/models/post.dart';
 import 'package:nexus/modules/home/all_chat_screen/all_chat_screen.dart';
 import 'package:nexus/modules/home_layout/cubit/home_cubit.dart';
+import 'package:nexus/modules/other/notifications_screen/notifications_screen.dart';
 import 'package:nexus/shared/components/components.dart';
 import '../../assets/fonts/nexus_icons.dart';
 import '../../shared/styles/colors.dart';
@@ -63,7 +64,9 @@ class HomePage extends StatelessWidget {
                   ]
                 : [
                     IconButton(onPressed: () {}, icon: Icon(NexusIcons.search)),
-                    IconButton(onPressed: () {}, icon: Icon(NexusIcons.alert)),
+                    IconButton(onPressed: () {
+                      navigateTo(context, NotificationsScreen());
+                    }, icon: Icon(NexusIcons.alert)),
                     IconButton(
                       onPressed: () {},
                       icon: Icon(NexusIcons.settings),

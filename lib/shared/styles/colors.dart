@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 const Color neutralColor = Color(0xFF64748B);
 
 const Color primaryColor = Color(0xFFEA580C);
+const Color primaryDimmedColor = Color(0xFFA83300);
 const Color onPrimaryColor = Color(0xFFFFFFFF);
 const Color onSecondaryColor = Color(0xFFFFFFFF);
 const Color secondaryColor = Color(0xFF565e74);
@@ -19,6 +20,7 @@ const Color onBackgroundColor = Color(0xFF0b1c30);
 const Color surface2Color = Color(0xF3F4FAFF);
 const Color onSurfaceColor = Color(0xFF0b1c30);
 const Color surfaceContainerLowColor = Color(0xFFEFF4FF);
+const Color surfaceContainer = Color(0xFFFFDBD0);
 const Color surfaceContainerHighestColor = Color(0xFFD3E4FE);
 const Color lightGrey = Color(0xffedf2fd);
 const Color primaryFixed = Color(0xffFFDBD0);
