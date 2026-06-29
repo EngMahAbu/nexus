@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:injectable/injectable.dart';
 import 'package:nexus/features/auth/api/client/firebase_auth_client.dart';
 import 'package:nexus/features/auth/data/data_sources/auth_remote_data_source.dart';
 import '../../data/models/user_credential_model.dart';
 
+@Injectable(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final FirebaseAuthClient _client;
 

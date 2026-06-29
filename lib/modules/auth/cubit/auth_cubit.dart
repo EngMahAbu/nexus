@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:nexus/features/auth/api/client/firebase_auth_client.dart';
 import 'package:nexus/features/auth/api/data_sources/auth_remote_data_source_impl.dart';
@@ -14,6 +15,7 @@ import 'package:nexus/shared/network/remote/firebase_auth_manager.dart';
 import 'package:nexus/shared/network/remote/firebase_cloud_messaging_manager.dart';
 import 'package:nexus/shared/network/remote/firestore_manager.dart';
 
+@injectable
 class AuthCubit extends Cubit<AuthStates> {
   late final LoginUseCase _loginUseCase;
 

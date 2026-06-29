@@ -1,7 +1,9 @@
+import 'package:injectable/injectable.dart';
 import 'package:nexus/features/auth/data/data_sources/auth_remote_data_source.dart';
 import 'package:nexus/features/auth/domain/entities/user_credential_entity.dart';
 import 'package:nexus/features/auth/domain/repositories/auth_repository.dart';
 
+@Injectable(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _authRemoteDataSource;
 

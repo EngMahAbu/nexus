@@ -13,6 +13,7 @@ import 'package:nexus/shared/network/remote/local_notification_service.dart';
 import 'package:nexus/shared/styles/themes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/di/di.dart';
 import 'modules/home_layout/cubit/home_cubit.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -38,6 +39,7 @@ void main() async {
   );
 
   Bloc.observer = MyBlocObserver();
+  configureDependencies();
   runApp(MyApp(userId: userId));
 }
 
