@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nexus/features/auth/domain/entities/user_credential_entity.dart';
 import 'package:nexus/models/auth/user_profile.dart';
 
 abstract class AuthStates {}
@@ -24,7 +25,7 @@ class AuthLoginPasswordVisibilityChangedState extends AuthStates {}
 class AuthLoginLoadingState extends AuthStates {}
 
 class AuthLoginSuccessState extends AuthStates {
-  final UserCredential credential;
+  final UserCredentialEntity credential;
 
   AuthLoginSuccessState({required this.credential});
 }
