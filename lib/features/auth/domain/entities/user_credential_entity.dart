@@ -2,8 +2,6 @@ class UserCredentialEntity {
   // credential fields
   final int? token;
   final String? accessToken;
-  final String providerId;
-  final String signInMethod;
 
   // user fields
   final String uid;
@@ -17,8 +15,6 @@ class UserCredentialEntity {
   UserCredentialEntity({
     required this.token,
     required this.accessToken,
-    required this.providerId,
-    required this.signInMethod,
     required this.uid,
     required this.displayName,
     required this.email,

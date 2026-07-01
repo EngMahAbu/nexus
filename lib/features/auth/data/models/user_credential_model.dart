@@ -5,8 +5,6 @@ class UserCredentialModel {
   // credential fields
   final int? token;
   final String? accessToken;
-  final String providerId;
-  final String signInMethod;
 
   // user fields
   final String uid;
@@ -18,10 +16,8 @@ class UserCredentialModel {
   final String? refreshToken;
 
   UserCredentialModel(UserCredential userCredential)
-    : token = userCredential.credential!.token,
-      accessToken = userCredential.credential!.accessToken,
-      providerId = userCredential.credential!.providerId,
-      signInMethod = userCredential.credential!.signInMethod,
+    : token = userCredential.credential?.token,
+      accessToken = userCredential.credential?.accessToken,
       uid = userCredential.user!.uid,
       displayName = userCredential.user!.displayName,
       email = userCredential.user!.email,
@@ -33,8 +29,6 @@ class UserCredentialModel {
   UserCredentialEntity toEntity() => UserCredentialEntity(
     token: token,
     accessToken: accessToken,
-    providerId: providerId,
-    signInMethod: signInMethod,
     uid: uid,
     displayName: displayName,
     email: email,

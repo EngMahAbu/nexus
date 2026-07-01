@@ -25,4 +25,4 @@ const String userDisabledResponse = 'User disabled, contact support.';
 const String invalidCredentialResponse = 'Incorrect email or password.';
 
 // Network Local
-const String userIdKey = 'userId';
+// const String userIdKey = 'userId';

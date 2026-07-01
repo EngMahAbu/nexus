@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nexus/models/auth/user_profile.dart';
 import 'package:nexus/models/message.dart';
 import 'package:nexus/models/notification.dart';
 import 'package:nexus/models/post.dart';
@@ -7,12 +6,12 @@ import 'package:nexus/models/post.dart';
 
 class FirestoreManager {
   // User Profile Utilities
-  static Future<void> updateUserProfile(UserProfile profile) {
-    return FirebaseFirestore.instance
-        .collection('UserProfiles')
-        .doc(profile.user.uid)
-        .set(profile.toMap());
-  }
+  // static Future<void> updateUserProfile(UserProfile profile) {
+  //   return FirebaseFirestore.instance
+  //       .collection('UserProfiles')
+  //       .doc(profile.user.uid)
+  //       .set(profile.toMap());
+  // }
 
   static Future<DocumentSnapshot<Map<String, dynamic>>> getUserProfile(
     String userId,

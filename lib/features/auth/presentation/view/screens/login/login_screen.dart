@@ -2,9 +2,10 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nexus/assets/fonts/nexus_icons.dart';
-import 'package:nexus/modules/auth/cubit/auth_cubit.dart';
-import 'package:nexus/modules/auth/cubit/auth_states.dart';
-import 'package:nexus/modules/auth/register_screen/register_screen.dart';
+import 'package:nexus/core/di/di.dart';
+import 'package:nexus/features/auth/presentation/viewmodel/auth_cubit.dart';
+import 'package:nexus/features/auth/presentation/viewmodel/auth_states.dart';
+import 'package:nexus/features/auth/presentation/view/screens/register/register_screen.dart';
 import 'package:nexus/modules/home_layout/home_page.dart';
 import 'package:nexus/shared/components/components.dart';
 import 'package:nexus/shared/components/constants.dart';
@@ -20,7 +21,7 @@ class LoginScreen extends StatelessWidget {
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return BlocProvider(
-      create: (context) => AuthCubit(),
+      create: (context) => getIt<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthStates>(
         listener: (context, state) {
           if (state is AuthLoginSuccessState) {

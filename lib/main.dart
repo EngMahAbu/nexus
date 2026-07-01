@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nexus/core/contansts/app_constants.dart';
 import 'package:nexus/models/cloud_message.dart';
-import 'package:nexus/modules/auth/login_screen/login_screen.dart';
+import 'package:nexus/features/auth/presentation/view/screens/login/login_screen.dart';
 import 'package:nexus/modules/home_layout/home_page.dart';
 import 'package:nexus/modules/other/notifications_screen/notifications_screen.dart';
 import 'package:nexus/shared/components/bloc/my_bloc_observer.dart';
-import 'package:nexus/shared/components/constants.dart';
 import 'package:nexus/shared/network/local/shared_preferences_helper.dart';
 import 'package:nexus/shared/network/remote/firebase_cloud_messaging_manager.dart';
 import 'package:nexus/shared/network/remote/local_notification_service.dart';
@@ -27,7 +27,7 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
-  String? userId = await SharedPreferencesHelper.getString(userIdKey);
+  String? userId = await SharedPreferencesHelper.getString(AppConstants.cacheUserUidKey);
   // FCM
   LocalNotificationsService localNotificationsService =
       LocalNotificationsService.instance();

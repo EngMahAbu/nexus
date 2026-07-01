@@ -92,19 +92,20 @@ class HomeCubit extends Cubit<HomeStates> {
       newProfile.coverPhotoUrl = userProfile!.coverPhotoUrl;
     }
 
-    FirestoreManager.updateUserProfile(newProfile)
-        .then((value) {
-          userProfile = newProfile;
-          emit(ProfileUpdateSuccessState(userProfile!));
-        })
-        .catchError((error) {
-          emit(
-            ProfileUpdateErrorState(
-              errorMessage:
-                  'Error happened while updating user profile: $error',
-            ),
-          );
-        });
+    // TODO: uncomment this when the respective use case is created
+    // FirestoreManager.updateUserProfile(newProfile)
+    //     .then((value) {
+    //       userProfile = newProfile;
+    //       emit(ProfileUpdateSuccessState(userProfile!));
+    //     })
+    //     .catchError((error) {
+    //       emit(
+    //         ProfileUpdateErrorState(
+    //           errorMessage:
+    //               'Error happened while updating user profile: $error',
+    //         ),
+    //       );
+    //     });
   }
 
   void pickUserAvatarPhoto() async {
